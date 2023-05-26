@@ -867,6 +867,50 @@ char **Placeswitch(char **tab, int length, int width)
     } while (S == 1 || H == 1);
 }
 
+
+
+int savefile(char** tab, int score, sign, int width, int length){
+   // Ouvrir le fichier highscore en mode lecture
+    FILE *file = fopen("highscore.txt", "r");
+    if (file == NULL) {
+        printf("Impossible d'ouvrir le fichier highscore.\n");
+        return 1;
+    }
+
+    // Créer un nouveau fichier temporaire en mode écriture
+    FILE *tempFile = fopen("temp_highscore.txt", "w");
+    if (tempFile == NULL) {
+        printf("Impossible de créer le fichier temporaire.\n");
+        fclose(file);
+        return 1;
+    }
+    char newName[256];//pour avoir le nom de la personne
+    printf("what's your name/surname?"\n);
+    scanf("%s", newName);
+    // Lire le contenu du fichier highscore ligne par ligne
+    char buffer[256];
+    int scoreUpdated = 0; // Indicateur pour savoir si le score a été mis à jour
+
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        char *name = strtok(buffer, ",");
+        char *scoreStr = strtok(NULL, ",");
+        int score = atoi(scoreStr);
+        if (score < newScore && !scoreUpdated) {// Vérifier si le score actuel est inférieur au nouveau score
+            core = newScore;// Modifier le score
+            strcpy(name, newName); // Mettre à jour le nom si nécessaire
+            scoreUpdated = 1; // Indiquer que le score a été mis à jour
+        }
+        fprintf(tempFile, "%s,%d\n", name, score); // Écrire les données modifiées dans le fichier temporaire   
+    }
+    if (!scoreUpdated) {
+        fprintf(tempFile, "%s,%d\n", newName, newScore);// Si le score n'a pas encore été mis à jour et qu'il n'y a plus de scores à lire
+    // Ajouter le nouveau score à la fin de la liste
+    }
+    fclose(file);
+    fclose(tempFile);
+    remove("highscore.txt");// Supprimer l'ancien fichier highscore
+    rename("temp_highscore.txt", "highscore.txt");// Renommer le fichier temporaire avec le nom de l'ancien fichier highscore
+}
 void main()
 {
     srand(time(NULL));
