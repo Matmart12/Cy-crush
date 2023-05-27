@@ -907,7 +907,7 @@ char **Placeswitch(char **tab, int length, int width, int score)
         }
         y2--;
         if((x!=x2+1 && x!=x2-1 && x!= x2) || (y!=y2+1 && y!=y2-1 && y!= y2)||(x==x2+1 && y==y2+1)||(x==x2-1 && y==y2+1)||(x==x2+1 && y==y2-1)||(x==x2-1 && y==y2-1)){
-            printf("Try again to 3 secondes.\n");
+            printf("Try again to switch caracter's places in 3 secondes.\n");
         sleep(3);
         }
         } while ((x!=x2+1 && x!=x2-1 && x!= x2) || (y!=y2+1 && y!=y2-1 && y!= y2)||(x==x2+1 && y==y2+1)||(x==x2-1 && y==y2+1)||(x==x2+1 && y==y2-1)||(x==x2-1 && y==y2-1));
@@ -948,8 +948,6 @@ char **Placeswitch(char **tab, int length, int width, int score)
                 printf("Cannot destroy anything! Try again!\n");
             }
         }
-        printf("Try again to 3 secondes.\n");
-        sleep(3);
     }
 
 
