@@ -1250,20 +1250,21 @@ int checkGame() //cette fonction permet de savoir si l'on a une partie correctem
         FILE* file = fopen("time.txt", "r"); //puis une longueur
         if(file != NULL)
         {
-        fclose(file);
-        FILE* file = fopen("length.txt", "r"); //puis une longueur
-        if(file != NULL)
-        {
             fclose(file);
-            FILE* file = fopen("width.txt", "r"); //puis une largeur
+            FILE* file = fopen("length.txt", "r"); //puis une longueur
             if(file != NULL)
             {
                 fclose(file);
-                FILE* file = fopen("tab.txt", "r"); //puis un tableau
+                FILE* file = fopen("width.txt", "r"); //puis une largeur
                 if(file != NULL)
                 {
                     fclose(file);
-                    return 1; //et on revoie 1 si l'on a tout
+                    FILE* file = fopen("tab.txt", "r"); //puis un tableau
+                    if(file != NULL)
+                    {
+                        fclose(file);
+                        return 1; //et on revoie 1 si l'on a tout
+                    }
                 }
             }
         }
