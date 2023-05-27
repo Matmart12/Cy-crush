@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <ctype.h>
 #include <unistd.h>
 
 #define CB_RED "\033[91m"
@@ -15,9 +16,9 @@
 #define BB_RED "\033[41m"
 #define BB_DEFAULT "\033[0m"
 
-// lignes où retirer : 202-204-214-216-508-510-527-541-554-568-592-606-619-633
+#define DEUX 2
 
-char **buildTab(char **tab, int length, int width, int sign) // programme pour construire le tableau avec sa longueur, sa largeur et son nombre de symboles
+void buildTab(char **tab, int length, int width, int sign) // programme pour construire le tableau avec sa longueur, sa largeur et son nombre de symboles
 {
     int NmbofSymbol;
     for (int i = 0; i < width; i++) // parcourt complet de chaque case du tableau
@@ -59,7 +60,6 @@ char **buildTab(char **tab, int length, int width, int sign) // programme pour c
             }
         }
     }
-    return tab;
 }
 
 char buildoneTab(char **tab, int i, int j, int sign) // fonctionne exactement de la même façon que buildTab, mais ne génère que pour une seule case
@@ -159,6 +159,8 @@ void showTab(char **tab, int length, int width, int score)
     printf("score = %d\n\n", score);
 }
 
+
+
 void showTabTransition(char **tab, char **tab2, int length, int width, int score)
 {
     printf("\n");
@@ -241,6 +243,8 @@ void showTabTransition(char **tab, char **tab2, int length, int width, int score
     printf("score = %d\n\n", score);
 }
 
+
+
 // Fonction de verrification du tableau de jeu, si case vide, alors
 char **GravityCol(char **tab, int i, int j, int length, int width, int sign)
 {
@@ -262,6 +266,8 @@ char **GravityCol(char **tab, int i, int j, int length, int width, int sign)
     }
 }
 
+
+
 int checkSpace(char **tab, int length, int width)
 {
     int v = 0;
@@ -279,7 +285,9 @@ int checkSpace(char **tab, int length, int width)
     return v;
 }
 
-char **Gravity(char **tab, int length, int width, int sign, int score)
+
+
+void Gravity(char **tab, int length, int width, int sign, int score)
 {
     system("clear");
     showTab(tab, length, width, score);
@@ -301,10 +309,11 @@ char **Gravity(char **tab, int length, int width, int sign, int score)
         showTab(tab, length, width, score);
         usleep(70000);
     }
-    return tab;
 }
 
-char **destroyTabforStart(char **tab, int length, int width, int sign) // renvoie un tableau qui ne possède pas trois symboles côte à côte en longueur et en largeur
+
+
+void destroyTabforStart(char **tab, int length, int width, int sign) // renvoie un tableau qui ne possède pas trois symboles côte à côte en longueur et en largeur
 {
     int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, i2, j2;
     while (v1 != 1) // vérifie le tableau tant qu'il n'y a pas un tour sans modification du tableau : le booléen v1 prend 1 comme valeur au début et 0 s'il y a une modification par la suite
@@ -406,8 +415,9 @@ char **destroyTabforStart(char **tab, int length, int width, int sign) // renvoi
             }
         }
     }
-    return tab;
 }
+
+
 
 int checkSpaceNumber(char **tab2, int width, int length)
 {
@@ -425,9 +435,11 @@ int checkSpaceNumber(char **tab2, int width, int length)
     return score;
 }
 
-char **destroyTab(char **tab, int length, int width, int sign) // renvoie un tableau qui ne possède pas trois symboles côte à côte en longueur et en largeur
+
+
+void destroyTab(char **tab, int length, int width, int sign, int score) // renvoie un tableau qui ne possède pas trois symboles côte à côte en longueur et en largeur
 {
-    int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, i2, j2, score = 0;
+    int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, i2, j2;
     char **tab2;
     tab2 = malloc((width + 1) * sizeof(char *)); // on fait un tableau de pointeurs pour pouvoir faire un double tableau de caractères
     for (int a = 0; a < width; a++)
@@ -498,7 +510,7 @@ char **destroyTab(char **tab, int length, int width, int sign) // renvoie un tab
         system("clear");
         showTabTransition(tab, tab2, length, width, score);
         sleep(1);
-        tab2 = Gravity(tab2, length, width, sign, score);
+        Gravity(tab2, length, width, sign, score);
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < length; j++)
@@ -508,8 +520,9 @@ char **destroyTab(char **tab, int length, int width, int sign) // renvoie un tab
         }
     }
     tab[width][0] = score;
-    return tab;
 }
+
+
 
 int checkTab(char **tab, int length, int width) // sert à vérifier si un échange est possible dans le tableau
 {
@@ -538,6 +551,8 @@ int checkTab(char **tab, int length, int width) // sert à vérifier si un écha
     }
     return v; // renvoie la valeur de vérité qui sert pour des conditions. Si v vaut 1 (le tableau est échangable), alors la condition if est vraie sinon elle est fausse
 }
+
+
 
 int checkEnd(char **tab, int length, int width)
 {
@@ -608,59 +623,61 @@ int checkEnd(char **tab, int length, int width)
     return v;
 }
 
+
+
 int createLength_and_Width_withoutLimits(int *tab)
 {
-    printf("%sWARNING: you are in the limitless version of CY-crush.\nYou can create boards of any size you want.\nHowever, the game may run very slowly regularly and this version can be dangerous for the computer.\nPress '1' again to switch back to limit version.%s\n\n", CB_RED, CB_WHITE);
+    printf("%sWARNING: you are in the limitless version of CY-crush.\nYou can create boards of any size you want.\nHowever, the game may run very slowly regularly.\nIf you put a length greater than 32 or a width greater than 99, the game cannot be played and your table will only be displayed.\nIf you put a length greater than 63 or a width greater than 99, the display will not be able to be done correctly but will still be left.\nPress '-1' again to switch back to limit version.%s\n\nATTENTION INFORMATIONS IMPORTANTES : \n-ce jeu est deconseillé au épileptiques\n-il est déconseillé de faire des grands tableaux avec peu de symboles car le programme pourrait ne jamais se terminer\n-ne modifiez pas les fichiers textes associez au programme (length,width,score et tableau).\nSi vous le faites, remettez les anciennes valeurs ou supprimez le fichier (supprimer le fichier vous fera perdre votre sauvegarde).\n\n", CB_RED, CB_WHITE);
     int length = 0, width = 0, trash = 0;
-    printf("Select a number of boxes with a length greater than 3: ");
+    printf("Select a number of boxes with a length greater than 1: ");
     scanf("%d", &length);
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
     }
     trash = 0;
-    if (length == 1)
+    if (length == -1)
     {
         system("clear");
         return createLength_and_Width(tab);
     }
-    while (length < 3)
+    while (length < 1)
     {
-        printf("Please select a number of boxes with a length greater than 3: ");
+        printf("Please select a number of boxes with a length greater than 1: ");
         scanf("%d", &length);
         while (trash != '\n' && trash != EOF)
         {
             trash = getchar();
         }
         trash = 0;
-        if (length == 1)
+        if (length == -1)
         {
             system("clear");
             return createLength_and_Width(tab);
         }
     }
-    printf("Select a number of boxes with a width greater than 3: ");
+    printf("Select a number of boxes with a width greater than 1: ");
     scanf("%d", &width);
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
     }
     trash = 0;
-    if (width == 1)
+    if (width == -1)
     {
         system("clear");
         return createLength_and_Width(tab);
     }
-    while (width < 3)
+    while (width < 1)
     {
-        printf("Please select a number of boxes with a width greater than 3: ");
+        printf("Please select a number of boxes with a width greater than 1: ");
         scanf("%d", &width);
         while (trash != '\n' && trash != EOF)
         {
             trash = getchar();
         }
         trash = 0;
-        if (width == 1)
+        if (width == -1)
         {
             system("clear");
             return createLength_and_Width(tab);
@@ -670,60 +687,62 @@ int createLength_and_Width_withoutLimits(int *tab)
     tab[1] = width;
     return 0;
 }
+
+
 
 int createLength_and_Width(int *tab)
 {
-    printf("You are in the limited version of CY-crush.\nIn this version, the number of squares in length and width is limited to 26.\nPress '1' when choosing squares in length or width to switch to the version limitless.\n\n");
+    printf("You are in the limited version of CY-crush.\nIn this version, the number of squares in length and width is limited to 26.\nPress '-1' when choosing squares in length or width to switch to the version limitless.\n\nATTENTION INFORMATIONS IMPORTANTES : \n-ce jeu est deconseillé au épileptiques\n-il est déconseillé de faire des grands tableaux avec peu de symboles car le programme pourrait ne jamais se terminer\n-ne modifiez pas les fichiers textes associez au programme (length,width,score et tableau).\nSi vous le faites, remettez les anciennes valeurs ou supprimez le fichier (supprimer le fichier vous fera perdre votre sauvegarde).\n\n");
     int width = 0, length = 0, trash = 0;
-    printf("Select a number of boxes of length between 3 and 26: ");
+    printf("Select a number of boxes of length between 1 and 26: ");
     scanf("%d", &length);
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
     }
     trash = 0;
-    if (length == 1)
+    if (length == -1)
     {
         system("clear");
         return createLength_and_Width_withoutLimits(tab);
     }
-    while (length < 3 || length > 26)
+    while (length < 1 || length > 26)
     {
-        printf("Please select a number of boxes of length between 3 and 26: ");
+        printf("Please select a number of boxes of length between 1 and 26: ");
         scanf("%d", &length);
         while (trash != '\n' && trash != EOF)
         {
             trash = getchar();
         }
         trash = 0;
-        if (length == 1)
+        if (length == -1)
         {
             system("clear");
             return createLength_and_Width_withoutLimits(tab);
         }
     }
-    printf("Select a number of boxes of width between 3 and 26: ");
+    printf("Select a number of boxes of width between 1 and 26: ");
     scanf("%d", &width);
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
     }
     trash = 0;
-    if (width == 1)
+    if (width == -1)
     {
         system("clear");
         return createLength_and_Width_withoutLimits(tab);
     }
-    while (width < 3 || width > 26)
+    while (width < 1 || width > 26)
     {
-        printf("Please select a number of boxes of width between 3 and 26: ");
+        printf("Please select a number of boxes of width between 1 and 26: ");
         scanf("%d", &width);
         while (trash != '\n' && trash != EOF)
         {
             trash = getchar();
         }
         trash = 0;
-        if (width == 1)
+        if (width == -1)
         {
             system("clear");
             return createLength_and_Width_withoutLimits(tab);
@@ -734,7 +753,9 @@ int createLength_and_Width(int *tab)
     return 0;
 }
 
-int createSign()
+
+
+int createSign(int* tab)
 {
     int sign = 0, trash = 0;
     printf("Select a number of symbols between 4 and 6: ");
@@ -757,11 +778,13 @@ int createSign()
     return sign;
 }
 
+
+
 int wantStop()
 {
     int trash = 0;
     char wantStop;
-    printf("Do you want to stop here(print 'Y' for yes or 'N' for no) : ");
+    printf("Do you want to stop here (print 'y' or 'Y' for yes and something else for no) : ");
     wantStop = getchar();
     while (trash != '\n' && trash != EOF)
     {
@@ -771,32 +794,55 @@ int wantStop()
     {
         return 1;
     }
+    if (wantStop == 'y')
+    {
+        return 1;
+    }
     else
     {
         return 0;
     }
 }
 
-char **Placeswitch(char **tab, int length, int width)
+
+
+char **Placeswitch(char **tab, int length, int width, int score)
 {
-    int x, y, x2, y2, trash, S, H;
-    char m1, m2;
+    int x = 0, y = 0, x2 = 0, y2 = 0, trash = 0, S, H;
+    char m1, m2, switchValidate;
     do
     {
-        S = 0, H = 0;
-        do
+        system("clear");
+        showTab(tab,length,width,score);
+        S = 0, H = 0, switchValidate = 0;
+        printf("What's the letter of the first place : ");
+        x = getchar(); //prendre la première lettre/chiffre
+        while (trash != '\n' && trash != EOF)
+        { //vider le buffer
+            trash = getchar();
+        }
+        trash = 0;
+        if (x >= 97 && x <= 122)
         {
-            printf("What's the letter of the first place : ");
-            trash = 0;
-            x = getchar(); // prendre la première lettre/chiffre
+            x = toupper(x);
+        }
+        x -= 'A';
+        while (x < 0 || x > width - 1)
+        {
+            printf("Please select again the letter of the first place : ");
+            x = getchar();
             while (trash != '\n' && trash != EOF)
-            { // vider le buffer
+            {
                 trash = getchar();
             }
+            trash = 0;
+            if (x >= 97 && x <= 122)
+            {
+                x = toupper(x);
+            }
             x -= 'A';
-        } while (x > width - 1 || x < 0);
-        trash = 0;
-        printf("What's the number of the first place : ");
+        }
+        printf("Next, what's the number of the first place : ");
         scanf("%d", &y);
         while (trash != '\n' && trash != EOF)
         {
@@ -814,29 +860,45 @@ char **Placeswitch(char **tab, int length, int width)
             trash = 0;
         }
         y--;
-        do
+        printf("La case choisie est (%c,%d).\n\n", (x + 65), (y + 1));
+        printf("What's the letter of the second place : ");
+        x2 = getchar(); // prendre la première lettre/chiffre
+        while (trash != '\n' && trash != EOF)
+        { // vider le buffer
+            trash = getchar();
+        }
+        trash = 0; 
+        if (x2 >= 97 && x2 <= 122)
         {
-            printf("What's the letter of the second place : ");
-            trash = 0;
+            x2 = toupper(x2);
+        }
+        x2 -= 'A';
+        while (x2 < 0 || x2 > width - 1)
+        {
+            printf("Please, select again the letter of the second place : ");
             x2 = getchar(); // prendre la première lettre/chiffre
             while (trash != '\n' && trash != EOF)
             { // vider le buffer
                 trash = getchar();
             }
+            trash = 0; 
+            if (x2 >= 97 && x2 <= 122)
+            {
+                x2 = toupper(x2);
+            }
             x2 -= 'A';
-        } while (x2 > width - 1 || x2 < 0);
-        trash = 0;
-        printf("What's the number of the second place : ");
+        }
+        printf("Next, what's the number of the second place : ");
         scanf("%d", &y2);
         while (trash != '\n' && trash != EOF)
         {
             trash = getchar();
         }
         trash = 0;
-        while (y2 < 0 || y2 > width)
+        while (y2 <= 0 || y2 > width)
         {
             printf("Please select again the number of the second place : ");
-            scanf("%d", &y);
+            scanf("%d", &y2);
             while (trash != '\n' && trash != EOF)
             {
                 trash = getchar();
@@ -844,61 +906,496 @@ char **Placeswitch(char **tab, int length, int width)
             trash = 0;
         }
         y2--;
-        if (x == x2 && y == y2)
+        } while ((x!=x2+1 && x!=x2-1 && x!= x2) || (y!=y2+1 && y!=y2-1 && y!= y2)||(x==x2+1 && y==y2+1)||(x==x2-1 && y==y2+1)||(x==x2+1 && y==y2-1)||(x==x2-1 && y==y2-1));
+
+        printf("La case choisie est (%c,%d).\n\n", (x2 + 65), (y2 + 1));
+        printf("Est-ce bien cette case que vous avez choisi ? (print 'y' or 'Y' for yes and something else for no) : ");
+        switchValidate = getchar();
+        while (trash != '\n' && trash != EOF)
+        { // vider le buffer
+            trash = getchar();
+        }
+        trash = 0;
+        printf("\n");
+        if(switchValidate != 'y' && switchValidate != 'Y')
+        {
+            H = 1;
+        }
+        else if(x == x2 && y == y2)
         { // vérifier que les deux soit différents
             S = 1;
             printf("Same case! Try again!\n");
         }
-        m1 = tab[y][x];
-        m2 = tab[y2][x2];
-        tab[y][x] = m2;
-        tab[y2][x2] = m1;
-        if (checkTab(tab, length, width))
-        { // vérifier que l'on peut détruire après l'échange
-            return tab;
+        else
+        {
+            m1 = tab[y][x];
+            m2 = tab[y2][x2];
+            tab[y][x] = m2;
+            tab[y2][x2] = m1;
+            if (checkTab(tab, length, width))
+            { // vérifier que l'on peut détruire après l'échange
+                return tab;
+            }
+            else
+            {
+                tab[y2][x2] = m2;
+                tab[y][x] = m1;
+                H = 1;
+                printf("Cannot destroy anything! Try again!\n");
+            }
+        }
+        printf("Reesayer d'échanger les cases dans 3 secondes.\n");
+        sleep(3);
+    }
+
+
+
+int roundNumber()
+{
+    int roundNumber = 0;
+    char roundValidate, trash = 0;
+    printf("Voulez vous definir un nombre de rounds ? (print 'y' or 'Y' for yes and something else for no) : ");
+    roundValidate = getchar();
+    while (trash != '\n' && trash != EOF)
+    {
+        trash = getchar();
+    }
+    trash = 0;
+    if(roundValidate == 'y' || roundValidate == 'Y')
+    {
+        while(roundNumber <= 0)
+        {
+            printf("Choisissez un nombre de round superieur a 0 : ");
+            scanf("%d",&roundNumber);
+            while (trash != '\n' && trash != EOF)
+            {
+                trash = getchar();
+            }
+            trash = 0;
+        }
+        return roundNumber;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+
+
+// Fonction pour sauvegarder le score dans un fichier
+void saveScore(int score) 
+{
+    FILE* fichier = fopen("score.txt", "w");
+    if (fichier != NULL) 
+    {
+        fprintf(fichier, "%d", score);
+        fclose(fichier);
+        printf("Score sauvegardé avec succès.\n");
+    } 
+    else 
+    {
+        printf("Erreur lors de l'ouverture du fichier score.\n");
+    }
+}
+
+
+
+void saveLength(int length) 
+{
+    FILE* fichier = fopen("length.txt", "w");
+    if (fichier != NULL) 
+    {
+        fprintf(fichier, "%d", length);
+        fclose(fichier);
+    } 
+    else 
+    {
+        printf("Erreur lors de l'ouverture du fichier length.\n");
+    }
+}
+
+
+
+void saveWidth(int width) 
+{
+    FILE* fichier = fopen("width.txt", "w");
+    if (fichier != NULL) 
+    {
+        fprintf(fichier, "%d", width);
+        fclose(fichier);
+    } 
+    else 
+    {
+        printf("Erreur lors de l'ouverture du fichier width.\n");
+    }
+}
+
+
+
+// Fonction pour sauvegarder le tableau de bonbons dans un fichier
+void saveTab(char** tab, int length, int width) {
+    FILE* fichier = fopen("tableau.txt", "w");
+    if (fichier != NULL) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < length; j++) {
+                fprintf(fichier, "%c", tab[i][j]);
+            }
+            fprintf(fichier, "\n");
+        }
+        fclose(fichier);
+        printf("Tableau sauvegardé avec succès.\n");
+    } 
+    else 
+    {
+        printf("Erreur lors de l'ouverture du fichier tableau.\n");
+    }
+}
+
+
+
+void saveGame(char** tab, int length, int width, int score)
+{
+    char saveValidate = 0, trash = 0;
+    printf("Do you want to save your actual game ? (print 'y' or 'Y' for yes and something else for no) : ");
+    saveValidate = getchar();
+    while (trash != '\n' && trash != EOF)
+    {
+        trash = getchar();
+    }
+    trash = 0;
+    if(saveValidate == 'y' || saveValidate == 'Y')
+    {
+        saveLength(length);
+        saveWidth(width);
+        saveScore(score);
+        saveTab(tab,length,width);
+    }
+    printf("\n");
+}  
+
+
+
+// Fonction pour charger le score à partir d'un fichier
+int loadScore() {
+    int score = 0;
+    FILE* fichier = fopen("score.txt", "r");
+    if (fichier != NULL) 
+    {
+        fscanf(fichier, "%d", &score);
+        fclose(fichier);
+        printf("Score chargé avec succès.\n");
+    } 
+    else 
+    {
+        printf("Erreur lors de l'ouverture du fichier score.\n");
+    }
+    return score;
+}
+
+
+
+int loadLength() {
+    int length = 0;
+    FILE* fichier = fopen("length.txt", "r");
+    if (fichier != NULL) 
+    {
+        fscanf(fichier, "%d", &length);
+        fclose(fichier);
+    } 
+    else 
+    {
+        printf("Erreur lors de l'ouverture du fichier length.\n");
+    }
+    return length;
+}
+
+
+
+int loadWidth() {
+    int width = 0;
+    FILE* fichier = fopen("width.txt", "r");
+    if (fichier != NULL) 
+    {
+        fscanf(fichier, "%d", &width);
+        fclose(fichier);
+    } 
+    else 
+    {
+        printf("Erreur lors de l'ouverture du fichier width.\n");
+    }
+    return width;
+}
+
+
+
+// Fonction pour charger le tableau de bonbons à partir d'un fichier
+void loadTab(char** tab, int length, int width) {
+    FILE* fichier = fopen("tableau.txt", "r");
+    if (fichier != NULL) {
+        for (int i = 0; i < width; i++) 
+        {
+            for (int j = 0; j < length; j++) 
+            {
+                fscanf(fichier, "%c", &tab[i][j]);
+            }
+            fscanf(fichier, "\n");
+        }
+        fclose(fichier);
+        printf("Tableau chargé avec succès.\n");
+    } 
+    else 
+    {
+        printf("Erreur lors de l'ouverture du fichier tableau.\n");
+    }
+}
+
+
+
+int wantLoadGame()
+{
+    char loadValidate = 0, trash = 0;
+    printf("Do you want to load the game you save ? (print 'y' or 'Y' for yes and something else for no) : ");
+    loadValidate = getchar();
+    while (trash != '\n' && trash != EOF)
+    {
+        trash = getchar();
+    }
+    trash = 0;
+    if(loadValidate == 'y' || loadValidate == 'Y')
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;    
+    }
+
+}
+
+
+
+void loadGame(char** tab, int length, int width)
+{
+    int score = loadScore();
+    loadTab(tab,length,width);
+    tab[width][0] = score;
+}
+
+
+
+void game(char** tab,int length, int width, int sign, int score, int roundNmb)
+{
+    while (checkEnd(tab, length, width))
+    {
+        tab = Placeswitch(tab, length, width, score);
+        showTab(tab, length, width, score);
+        destroyTab(tab, length, width, sign, score);
+        score = tab[width][0];
+        roundNmb--;
+        if(roundNmb < 0)
+        {
+            //ne rien faire
+        }
+        else if(roundNmb == 0)
+        {
+            printf("C'est fini !\n\n");
+            break;
         }
         else
         {
-            tab[y2][x2] = m2;
-            tab[y][x] = m1;
-            H = 1;
-            printf("Cannot destroy anything! Try again!\n");
+            printf("Il vous reste %d rounds.\n\n",roundNmb);
         }
-    } while (S == 1 || H == 1);
-}
-
-void main()
-{
-    srand(time(NULL));
-    time_t begin = time(NULL);
-    int tab2[2], length, width, sign, score = 0; // longueur, largeur, nombre de symboles
-    char **tab;
-    createLength_and_Width(tab2);
-    length = tab2[0];
-    width = tab2[1];
-    sign = createSign();
-    tab = malloc((width + 1) * sizeof(char *)); // on fait un tableau de pointeurs pour pouvoir faire un double tableau de caractères
-    for (int i = 0; i < width; i++)
-    {
-        tab[i] = malloc(length * sizeof(char));
-    }
-    tab[width] = malloc(length * sizeof(int));
-    tab[width][0] = 0;
-    tab = buildTab(tab, length, width, sign);
-    tab = destroyTabforStart(tab, length, width, sign);
-    showTab(tab, length, width, score);
-    score = tab[width][0];
-    while (checkEnd(tab, length, width))
-    {
-        tab = Placeswitch(tab, length, width);
-        showTab(tab, length, width, score);
-        tab = destroyTab(tab, length, width, sign);
-        if(wantStop())
+        saveGame(tab,length,width,score);
+        if (wantStop())
         {
             printf("\n");
             break;
         }
     }
+}
+
+
+int checkGame()
+{
+    int gameExist;
+    FILE* fichier = fopen("score.txt", "r");
+    if(fichier != NULL)
+    {
+        fclose(fichier);
+        FILE* fichier = fopen("length.txt", "r");
+        if(fichier != NULL)
+        {
+            fclose(fichier);
+            FILE* fichier = fopen("width.txt", "r");
+            if(fichier != NULL)
+            {
+                fclose(fichier);
+                FILE* fichier = fopen("tableau.txt", "r");
+                if(fichier != NULL)
+                {
+                    fclose(fichier);
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+
+int savehighscore(int score){
+    FILE *file = fopen("highscore.txt", "w"); //Ouvrir le fichier highscore en mode lecture
+    if (file == NULL) {
+        printf("Impossible to create highscore's file.\n");
+        fclose(file);
+        return 1;
+    }
+    FILE *tempFile = fopen("temp_highscore.txt", "w"); //Créer un nouveau fichier temporaire en mode écriture
+    if (tempFile == NULL) {
+        printf("Impossible to create temporary file.\n");
+        fclose(file);
+        return 1;
+    }
+    char newName[256];//pour avoir le nom de la personne
+    printf("what's your name/surname?\n");
+    scanf("%s", newName);
+    // Lire le contenu du fichier highscore ligne par ligne
+    char buffer[256];
+    int scoreUpdated = 0; // Indicateur pour savoir si le score a été mis à jour
+
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        char *name = strtok(buffer, ",");
+        char *scoreStr = strtok(NULL, ",");
+        int scoreecr = atoi(scoreStr);
+        if (scoreecr < score && !scoreUpdated) {// Vérifier si le score actuel est inférieur au nouveau score
+            scoreecr = score;// Modifier le score
+            strcpy(name, newName); // Mettre à jour le nom si nécessaire
+            scoreUpdated = 1; // Indiquer que le score a été mis à jour
+        }
+        fprintf(tempFile, "%s,%d\n", name, score); // Écrire les données modifiées dans le fichier temporaire   
+    }
+    if (!scoreUpdated) {
+        fprintf(tempFile, "%s,%d\n", newName, score);// Si le score n'a pas encore été mis à jour et qu'il n'y a plus de scores à lire
+    // Ajouter le nouveau score à la fin de la liste
+    }
+    fclose(file);
+    fclose(tempFile);
+    remove("highscore.txt");// Supprimer l'ancien fichier highscore
+    rename("temp_highscore.txt", "highscore.txt");// Renommer le fichier temporaire avec le nom de l'ancien fichier highscore
+    return 1;
+}
+
+
+
+void loadhighscore(){
+     FILE *file = fopen("highscore.txt", "r"); //Ouvrir le fichier highscore en mode lecture
+    if (file == NULL) {
+        printf("Impossible to read the file.\n");
+        fclose(file);
+        return 1;
+    }
+    char line[256];
+    while(fgets(line,sizeof(line),file)!=NULL){
+        printf("%s", line);
+    }
+    fclose(file);
+}
+
+
+
+void changeHour(int totalTime)
+{
+    int hours, minutes, seconds;
+    if(totalTime < 60)
+    {
+        printf("Vous avez joué %d seconde(s).\n\n",totalTime);    
+    }
+    else if(totalTime < 3600)
+    {
+        minutes = totalTime / 60;
+        seconds = (totalTime % 3600) % 60;
+        printf("Vous avez joué %d minute(s) et %d seconde(s).\n\n",minutes,seconds);
+    }
+    else
+    {
+        hours = seconds / 3600;
+        minutes = (seconds % 3600) / 60;
+        seconds = (totalTime % 3600) % 60;
+        printf("Vous avez joué %d heure(s), %d minute(s) et %d seconde(s).\n\n",hours,minutes,seconds);
+    }
+}
+
+
+
+void main()
+{
+    srand(time(NULL));
+    time_t begin = time(NULL);
+    int tab2[DEUX], length, width, sign, totalTime, roundNmb, score = 0, loadScore; // longueur, largeur, nombre de symboles
+    char** tab;
+    if(checkGame())
+    {
+        if(wantLoadGame())
+        {
+            length = loadLength();
+            width = loadWidth(); 
+            tab = malloc(width * sizeof(char*));
+            for (int i = 0; i < width; i++)
+            {
+                tab[i] = malloc(length * sizeof(char));
+            }
+            tab[width] = malloc(length * sizeof(int));
+            loadGame(tab,length,width);
+            roundNmb = roundNumber();
+        }
+        else
+        {
+            system("clear");
+            createLength_and_Width(tab2);
+            length = tab2[0];
+            width = tab2[1];
+            sign = createSign(tab2);
+            roundNmb = roundNumber();
+            tab = malloc(width * sizeof(char*));
+            for (int i = 0; i < width; i++)
+            {
+                tab[i] = malloc(length * sizeof(char));
+            }
+            tab[width] = malloc(length * sizeof(int));
+            buildTab(tab, length, width, sign);
+            destroyTabforStart(tab, length, width, sign);
+        }
+    }
+    else
+    {
+        system("clear");
+        createLength_and_Width(tab2);
+        length = tab2[0];
+        width = tab2[1];
+        sign = createSign(tab2);
+        roundNmb = roundNumber();
+        tab = malloc(width * sizeof(char*));
+        for (int i = 0; i < width; i++)
+        {
+            tab[i] = malloc(length * sizeof(char));
+        }
+        tab[width] = malloc(length * sizeof(int));
+        buildTab(tab, length, width, sign);
+        destroyTabforStart(tab, length, width, sign);
+    }
+    score = tab[width][0];
+    showTab(tab, length, width, score);
+    
+    if(length<=32 && width<=99)
+    {   
+        game(tab,length,width,sign,score,roundNmb);
+    }
+    savehighscore(score);
+    loadhighscore();
     time_t end = time(NULL);
-    printf("time = %ds",(end-begin));
+    totalTime = end - begin;
+    changeHour(totalTime);
+    free(tab);
 }
