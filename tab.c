@@ -810,6 +810,7 @@ char **Placeswitch(char **tab, int length, int width, int score)
 {
     int x = 0, y = 0, x2 = 0, y2 = 0, trash = 0, S, H;
     char m1, m2, switchValidate;
+    do{
     do
     {
         system("clear");
@@ -948,8 +949,8 @@ char **Placeswitch(char **tab, int length, int width, int score)
                 printf("Cannot destroy anything! Try again!\n");
             }
         }
-    }
-
+    }while(S==1 || H==1);
+}
 
 
 int roundNumber()
@@ -993,14 +994,27 @@ void saveScore(int score)
     {
         fprintf(fichier, "%d", score);
         fclose(fichier);
-        printf("Score sauvegardé avec succès.\n");
+        printf("Score successfuly saved.\n");
     } 
     else 
     {
         printf("error with the opening of the score file.\n");
     }
 }
-
+void saveScore(int totaltime) 
+{
+    FILE* fichier = fopen("time.txt", "w");
+    if (fichier != NULL) 
+    {
+        fprintf(fichier, "%d", time);
+        fclose(fichier);
+        printf("time suucessfuly saved.\n");
+    } 
+    else 
+    {
+        printf("error with the opening of the time file.\n");
+    }
+}
 
 
 void saveLength(int length) 
@@ -1095,7 +1109,21 @@ int loadScore() {
     return score;
 }
 
-
+int loadTime() {
+    int time = 0;
+    FILE* fichier = fopen("time.txt", "r");
+    if (fichier != NULL) 
+    {
+        fscanf(fichier, "%d", &time);
+        fclose(fichier);
+        printf("Time successfuly loaded.\n");
+    } 
+    else 
+    {
+        printf("error with the opening of the time file.\n");
+    }
+    return time;
+}
 
 int loadLength() {
     int length = 0;
@@ -1225,19 +1253,24 @@ int checkGame()
     if(fichier != NULL)
     {
         fclose(fichier);
-        FILE* fichier = fopen("length.txt", "r");
+        FILE* fichier = fopen("time.txt", "r");
         if(fichier != NULL)
         {
             fclose(fichier);
-            FILE* fichier = fopen("width.txt", "r");
+            FILE* fichier = fopen("length.txt", "r");
             if(fichier != NULL)
             {
                 fclose(fichier);
-                FILE* fichier = fopen("tableau.txt", "r");
+                FILE* fichier = fopen("width.txt", "r");
                 if(fichier != NULL)
                 {
                     fclose(fichier);
-                    return 1;
+                    FILE* fichier = fopen("tab.txt", "r");
+                    if(fichier != NULL)
+                    {
+                        fclose(fichier);
+                        return 1;
+                    }
                 }
             }
         }
