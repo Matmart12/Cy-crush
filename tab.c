@@ -1242,6 +1242,10 @@ int checkGame() //cette fonction permet de savoir si l'on a une partie correctem
     if(file != NULL)
     {
         fclose(file);
+        FILE* file = fopen("time.txt", "r"); //puis une longueur
+        if(file != NULL)
+        {
+        fclose(file);
         FILE* file = fopen("length.txt", "r"); //puis une longueur
         if(file != NULL)
         {
