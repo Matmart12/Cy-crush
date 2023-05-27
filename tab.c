@@ -5,7 +5,8 @@
 #include <ctype.h>
 #include <unistd.h>
 #include "main.h"
-#define CB_RED "\033[91m"
+
+#define CB_RED "\033[91m" 
 #define CB_GREEN "\033[92m"
 #define CB_YELLOW "\033[93m"
 #define CB_BLUE "\033[94m"
@@ -16,16 +17,16 @@
 #define BB_RED "\033[41m"
 #define BB_DEFAULT "\033[0m"
 
-#define DEUX 2
+#define TWO 2
 
-void buildTab(char **tab, int length, int width, int sign) // programme pour construire le tableau avec sa longueur, sa largeur et son nombre de symboles
+void buildTab(char **tab, int length, int width, int sign) //programme pour construire le tableau avec sa longueur, sa largeur et son nombre de symboles
 {
     int NmbofSymbol;
-    for (int i = 0; i < width; i++) // parcourt complet de chaque case du tableau
+    for (int i = 0; i < width; i++) //parcours complet de chaque case du tableau
     {
         for (int j = 0; j < length; j++)
         {
-            switch (sign) // configure le nombre de symboles
+            switch (sign) //configure le nombre de symboles
             {
             case 4:
                 NmbofSymbol = rand() % 4;
@@ -37,7 +38,7 @@ void buildTab(char **tab, int length, int width, int sign) // programme pour con
                 NmbofSymbol = rand() % 6;
                 break;
             }
-            switch (NmbofSymbol) // en fonction du nombre de symboles, génère aléatoirement un symbole parmi ceux possibles pour la case. Les symboles sont : U,X,I,O,L,N.
+            switch (NmbofSymbol) //en fonction du nombre de symboles, génère aléatoirement un symbole parmi ceux possibles pour la case. Les symboles sont : U,X,I,O,L,N
             {
             case 0:
                 tab[i][j] = 'U';
@@ -101,22 +102,24 @@ char buildoneTab(char **tab, int i, int j, int sign) // fonctionne exactement de
     return tab[i][j];
 }
 
+
+
 void showTab(char **tab, int length, int width, int score)
 {
-    printf("\n");
-    printf("    ");
+    printf("\n"); //on revient à la ligne pour espacer ce qu'il y avait d'écrit précédemment
+    printf("    "); //on laisse un espace et on écrit les lettres pour les colonnes en fonction de la longueur
     for (int j = 0; j < length; j++)
     {
         printf("%c ", j + 65);
     }
-    printf("\n");
+    printf("\n"); //puis on revient à la ligne et on met des '_' en dessous de chaque lettre
     printf("    ");
     for (int j = 0; j < length; j++)
     {
         printf("_ ");
     }
     printf("\n");
-    for (int i = 0; i < width; i++)
+    for (int i = 0; i < width; i++) //ensuite à l'emplacement où l'on a mit les espaces précédemment, on vient mettre des chiffres et des nombres correspondant au nombres : quand c'est un chiffre, on laisse un espace pour qu'un chiffre et un nombre prenne le même espace
     {
         if (i + 1 < 10)
         {
@@ -126,42 +129,42 @@ void showTab(char **tab, int length, int width, int score)
         {
             printf("%d| ", i + 1);
         }
-        for (int j = 0; j < length; j++)
+        for (int j = 0; j < length; j++) //puis en fonction du symbole et du nombre de symbole, on attribue une couleur à ce symbole et on laisse un espace pour le suivant. L'espace supplémentaire à la fin n'est pas important. On affiche aussi les espaces(' ') pour montrer la gravité
         {
             switch (tab[i][j])
             {
             case 'U':
-                printf("%s%c ", CB_CYAN, tab[i][j]);
+                printf("%s%c ", CB_CYAN, tab[i][j]); //U en cyan
                 break;
             case 'X':
-                printf("%s%c ", CB_RED, tab[i][j]);
+                printf("%s%c ", CB_RED, tab[i][j]); //X en rouge
                 break;
             case 'I':
-                printf("%s%c ", CB_PURPLE, tab[i][j]);
+                printf("%s%c ", CB_PURPLE, tab[i][j]); //I en violet
                 break;
             case 'O':
-                printf("%s%c ", CB_GREEN, tab[i][j]);
+                printf("%s%c ", CB_GREEN, tab[i][j]); //O en vert
                 break;
             case 'L':
-                printf("%s%c ", CB_BLUE, tab[i][j]);
+                printf("%s%c ", CB_BLUE, tab[i][j]); //L en bleu
                 break;
             case ' ':
                 printf("  ");
                 break;
             default:
-                printf("%s%c ", CB_YELLOW, tab[i][j]);
+                printf("%s%c ", CB_YELLOW, tab[i][j]); //N en jaune
                 break;
             }
         }
-        printf("%s\n", CB_WHITE);
+        printf("%s\n", CB_WHITE); //on remet la suite du texte en blanc
     }
-    printf("\n");
+    printf("\n"); //on saute une ligne et on affiche le score puis on resaute une ligne derrière
     printf("score = %d\n\n", score);
 }
 
 
 
-void showTabTransition(char **tab, char **tab2, int length, int width, int score)
+void showTabTransition(char **tab, char **tab2, int length, int width, int score) //fait la même chose que showTab a quelques exceptions. Il faut d'abord voir destroyTab pour mieux la comprendre
 {
     printf("\n");
     printf("    ");
@@ -188,9 +191,9 @@ void showTabTransition(char **tab, char **tab2, int length, int width, int score
         }
         for (int j = 0; j < length; j++)
         {
-            if (tab2[i][j] == ' ')
+            if (tab2[i][j] == ' ') //si tab2[i][j] a un espace (qu'on appelle vide), alors ça signifie que le symbole de cette case fait parti d'un groupe de 3 symboles. Il faut alors prendre le symbole qui correspond à ce vide et lui mettre un fond rouge pour faire une transition avec gravity. 
             {
-                switch (tab[i][j])
+                switch (tab[i][j]) //en fonction du symbole et de si tab2[i][j] a un vide, on attribue la couleur et le fond
                 {
                 case 'U':
                     printf("%s%s%c%s ", BB_RED, CB_CYAN, tab[i][j], BB_DEFAULT);
@@ -212,7 +215,7 @@ void showTabTransition(char **tab, char **tab2, int length, int width, int score
                     break;
                 }
             }
-            else
+            else //s'il n'y a pas d'espace, on fait comme dans un showTab classique
             {
                 switch (tab[i][j])
                 {
@@ -245,40 +248,39 @@ void showTabTransition(char **tab, char **tab2, int length, int width, int score
 
 
 
-// Fonction de verrification du tableau de jeu, si case vide, alors
-char **GravityCol(char **tab, int i, int j, int length, int width, int sign)
+
+void gravityCol(char **tab, int i, int j, int length, int width, int sign) //fait monter les vides en haut du tableau et les transforment les vides en symboles par récurrence
 {
     if (i == 0)
     {
-        if (tab[i][j] == ' ')
+        if (tab[i][j] == ' ') //on vérifie que la case est vide par précaution 
         {
-            tab[i][j] = buildoneTab(tab, i, j, sign); // ne marche pas sans le programme de victor
+            tab[i][j] = buildoneTab(tab, i, j, sign); //puis on donne au vide un symbole aléatoire
         }
-        return tab;
     }
-    else
-    { // la case du tableau est vide et ce n'est pas la première ligne
+    else //on échange la case du tableau (qui est vide) avec celle du dessus et on la fait remonter jusqu'en haut 
+    {
         char x;
         x = tab[i - 1][j];
         tab[i][j] = x;
         tab[i - 1][j] = ' ';
-        return GravityCol(tab, i - 1, j, length, width, sign);
+        return gravityCol(tab, i - 1, j, length, width, sign); //i désignant la largeur on remonte en executant la fonction en boucle
     }
 }
 
 
 
-int checkSpace(char **tab, int length, int width)
+int checkSpace(char **tab, int length, int width) //si le tableau contient des vides, renvoie 1, sinon 0
 {
     int v = 0;
-    for (int i = 0; i < width; i++)
+    for (int i = 0; i < width; i++) //parcours du tableau
     {
         for (int j = 0; j < length; j++)
         {
-            if (tab[i][j] == ' ')
+            if (tab[i][j] == ' ') //renvoie 1 s'il y'a un vide
             {
                 v = 1;
-                break;
+                break; //puis sort du parcours
             }
         }
     }
@@ -287,25 +289,25 @@ int checkSpace(char **tab, int length, int width)
 
 
 
-void Gravity(char **tab, int length, int width, int sign, int score)
+void gravity(char **tab, int length, int width, int sign, int score)
 {
-    system("clear");
+    system("clear"); //avec ces 3 lignes, on enchaîne rapidement les tableaux avec les symboles qui descendent petit à petit 
     showTab(tab, length, width, score);
     usleep(100000);
-    while (checkSpace(tab, length, width))
+    while (checkSpace(tab, length, width)) //tant que le tableau contient des espaces, on continue à faire descendre une ligne de symbole
     {
-        for (int j = 0; j < length; j++)
+        for (int j = 0; j < length; j++) //on fait un parcours en colonne à l'envers, c'est à dire que l'on part du bas de la colonne et on la remonte avant de passer à la suivante
         {
             for (int i = width - 1; i >= 0; i--)
             {
-                if (tab[i][j] == ' ')
+                if (tab[i][j] == ' ') //dès qu'on a un vide, on le fait remonter en haut avec GravityCol  
                 {
-                    tab = GravityCol(tab, i, j, length, width, sign);
-                    break;
+                    gravityCol(tab, i, j, length, width, sign);
+                    break; //puis une fois que l'on a trouvé un vide, on passe à la colonne suivante
                 }
             }
         }
-        system("clear");
+        system("clear"); //à la fin on affiche un tableau où tous les symboles avec un vide en dessous sont descendus d'une ligne. En le faisant en boucle, on une impression de gravité
         showTab(tab, length, width, score);
         usleep(70000);
     }
@@ -313,13 +315,13 @@ void Gravity(char **tab, int length, int width, int sign, int score)
 
 
 
-void destroyTabforStart(char **tab, int length, int width, int sign) // renvoie un tableau qui ne possède pas trois symboles côte à côte en longueur et en largeur
+void destroyTabforStart(char **tab, int length, int width, int sign) //renvoie un tableau qui ne possède pas trois symboles côte à côte en longueur, en largeur et en diagonale. C'est un tableau de départ qui n'applique pas la gravité et ne détecte pas tous les symboles côte à côte 3 à 3, mais renvoie un tableau sans 3 symboles côte à côte
 {
     int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, i2, j2;
     while (v1 != 1) // vérifie le tableau tant qu'il n'y a pas un tour sans modification du tableau : le booléen v1 prend 1 comme valeur au début et 0 s'il y a une modification par la suite
     {
         v1 = 1;
-        for (int i = 0; i < width; i++) // parcourt le tableau
+        for (int i = 0; i < width; i++) //parcours le tableau
         {
             for (int j = 0; j < length; j++)
             {
@@ -327,35 +329,35 @@ void destroyTabforStart(char **tab, int length, int width, int sign) // renvoie 
                 {
                     v2 = 1;
                 }
-                if (v2 == 1) // teste les symboles voisins en largeur si v2 vaut 1 (3 symboles identiques en longueur) et les remplace en vide (le vide correspond à un espace ' ' mais est appelé vide car il doit être remplacé ensuite) s'ils sont identiques
+                if (v2 == 1) //si on a trois symboles identiques en longueur on leur donne une nouvelle valeur aléatoire 
                 {
                     j2 = j;
-                    while ((j2 + 1 < length) && (tab[i][j2 + 1] == tab[i][j])) // teste toutes les cases à droite de la case du tableau où on se trouve actuellement avec le parcours du tableau (tab[i][j]) et les remplace en vide si les symboles des cases sont identiques à celui de la case du tableau où on se trouve actuellement
+                    while ((j2 + 1 < length) && (tab[i][j2 + 1] == tab[i][j])) //teste toutes les cases à droite de la case du tableau où on se trouve actuellement avec le parcours du tableau (tab[i][j]) et leur donne une nouvelle valeur aléatoire si les symboles des cases sont identiques à celui de la case du tableau où on se trouve actuellement
                     {
                         tab[i][j2 + 1] = buildoneTab(tab, i, j2 + 1, sign);
                         j2++;
                     }
                     j2 = j;
-                    while ((j2 - 1 >= 0) && (tab[i][j2 - 1] == tab[i][j])) // puis celles à gauche de la case du tableau où on se trouve actuellement
+                    while ((j2 - 1 >= 0) && (tab[i][j2 - 1] == tab[i][j])) //puis celles à gauche de la case du tableau où on se trouve actuellement
                     {
                         tab[i][j2 - 1] = buildoneTab(tab, i, j2 - 1, sign);
                         j2--;
                     }
-                }                                                                                            // ATTENTION : les annotations suivantes sont identiques au précédentes à la différences qu'elle s'appliquent pour 3 symboles en largeur au lieu de 3 symboles en longueur
+                } //ATTENTION : les annotations suivantes sont identiques au précédentes à la différences qu'elle s'appliquent pour 3 symboles en largeur au lieu de 3 symboles en longueur
                 if ((i >= 1 && i < width - 1) && (tab[i][j] == tab[i - 1][j] && tab[i][j] == tab[i + 1][j])) // teste si trois symboles sont identiques verticalement
                 {
                     v3 = 1;
                 }
-                if (v3 == 1) // teste les symboles voisins en largeur si v3 vaut 1 (3 symboles identiques en largeur) et les remplace en vide(le vide correspond à un espace ' ' mais est appelé vide car plus logique) s'ils sont identiques
+                if (v3 == 1) //teste les symboles voisins en largeur si v3 vaut 1 (3 symboles identiques en largeur) et les remplace en un nouveau symbole aléatoire s'ils sont identiques
                 {
                     i2 = i;
-                    while ((i2 + 1 < width) && (tab[i][j] == tab[i2 + 1][j])) // teste toutes les cases au dessus de la case du tableau où on se trouve actuellement avec le parcours du tableau (tab[i][j]) et les remplace en vide si les symboles des cases sont identiques à celui de la case du tableau où on se trouve actuellement
+                    while ((i2 + 1 < width) && (tab[i][j] == tab[i2 + 1][j])) //teste toutes les cases au dessus de la case du tableau où on se trouve actuellement avec le parcours du tableau (tab[i][j]) et les remplace en un nouveau symbole aléatoire si les symboles des cases sont identiques à celui de la case du tableau où on se trouve actuellement
                     {
                         tab[i2 + 1][j] = buildoneTab(tab, i2 - 1, j, sign);
                         i2++;
                     }
                     i2 = i;
-                    while ((i2 - 1 >= 0) && (tab[i][j] == tab[i2 - 1][j])) // puis celles en dessous de la case du tableau où on se trouve actuellement
+                    while ((i2 - 1 >= 0) && (tab[i][j] == tab[i2 - 1][j])) //puis celles en dessous de la case du tableau où on se trouve actuellement
                     {
                         tab[i2 - 1][j] = buildoneTab(tab, i2 - 1, j, sign);
                         i2--;
@@ -369,7 +371,7 @@ void destroyTabforStart(char **tab, int length, int width, int sign) // renvoie 
                 {
                     i2 = i;
                     j2 = j;
-                    while (((i2 - 1 > 0) && (j2 + 1 < length)) && ((tab[i][j] == tab[i2 - 1][j2 + 1]))) // teste toutes les cases au dessus de la case du tableau où on se trouve actuellement avec le parcours du tableau (tab[i][j]) et les remplace en vide si les symboles des cases sont identiques à celui de la case du tableau où on se trouve actuellement
+                    while (((i2 - 1 > 0) && (j2 + 1 < length)) && ((tab[i][j] == tab[i2 - 1][j2 + 1]))) //teste toutes les cases en haut à droite de la case du tableau où on se trouve actuellement avec le parcours du tableau (tab[i][j]) et les remplace en un nouveau symbole aléatoire si les symboles des cases sont identiques à celui de la case du tableau où on se trouve actuellement
                     {
                         tab[i2 - 1][j2 + 1] = buildoneTab(tab, i2 - 1, j2 + 1, sign);
                         i2--;
@@ -377,14 +379,14 @@ void destroyTabforStart(char **tab, int length, int width, int sign) // renvoie 
                     }
                     i2 = i;
                     j2 = j;
-                    while (((i2 + 1 < width) && (j2 - 1 > 0)) && ((tab[i][j] == tab[i2 + 1][j2 - 1]))) // puis celles en dessous de la case du tableau où on se trouve actuellement
+                    while (((i2 + 1 < width) && (j2 - 1 > 0)) && ((tab[i][j] == tab[i2 + 1][j2 - 1]))) //puis celles en bas à gauche de la case du tableau où on se trouve actuellement
                     {
                         tab[i2 + 1][j2 - 1] = buildoneTab(tab, i2 + 1, j2 - 1, sign);
                         i2++;
                         j2--;
                     }
                 }
-                if (((i >= 1 && i < width - 1) && (j >= 1 && j < length - 1)) && (tab[i][j] == tab[i - 1][j - 1] && tab[i][j] == tab[i + 1][j + 1])) // teste si trois symboles sont identiques diagonalement de bas à droite en haut à gauche
+                if (((i >= 1 && i < width - 1) && (j >= 1 && j < length - 1)) && (tab[i][j] == tab[i - 1][j - 1] && tab[i][j] == tab[i + 1][j + 1])) //teste si trois symboles sont identiques diagonalement de bas à droite en haut à gauche
                 {
                     v5 = 1;
                 }
@@ -392,7 +394,7 @@ void destroyTabforStart(char **tab, int length, int width, int sign) // renvoie 
                 {
                     i2 = i;
                     j2 = j;
-                    while (((i2 - 1 >= 0) && (j2 - 1 >= 0)) && ((tab[i][j] == tab[i2 - 1][j2 - 1]))) // teste toutes les cases au dessus de la case du tableau où on se trouve actuellement avec le parcours du tableau (tab[i][j]) et les remplace en vide si les symboles des cases sont identiques à celui de la case du tableau où on se trouve actuellement
+                    while (((i2 - 1 >= 0) && (j2 - 1 >= 0)) && ((tab[i][j] == tab[i2 - 1][j2 - 1]))) //teste toutes les cases en haut à gauche de la case du tableau où on se trouve actuellement avec le parcours du tableau (tab[i][j]) et les remplace en un nouveau symbole aléatoire si les symboles des cases sont identiques à celui de la case du tableau où on se trouve actuellement
                     {
                         tab[i2 - 1][j2 - 1] = buildoneTab(tab, i2 - 1, j2 - 1, sign);
                         i2--;
@@ -400,17 +402,17 @@ void destroyTabforStart(char **tab, int length, int width, int sign) // renvoie 
                     }
                     i2 = i;
                     j2 = j;
-                    while (((i2 + 1 < width) && (j2 + 1 < length)) && ((tab[i][j] == tab[i2 + 1][j2 + 1]))) // puis celles en dessous de la case du tableau où on se trouve actuellement
+                    while (((i2 + 1 < width) && (j2 + 1 < length)) && ((tab[i][j] == tab[i2 + 1][j2 + 1]))) //puis celles en bas à droite de la case du tableau où on se trouve actuellement
                     {
                         tab[i2 + 1][j2 + 1] = buildoneTab(tab, i2 + 1, j2 + 1, sign);
                         i2++;
                         j2++;
                     }
                 }
-                if (((v2 == 1) || (v3 == 1)) || ((v4 == 1) || (v5 == 1))) // on execute ce script si on a eu une détection de 3 cases identiques en largeur ou en longueur
+                if (((v2 == 1) || (v3 == 1)) || ((v4 == 1) || (v5 == 1))) //on exécute ce script si on a eu une détection de 3 cases identiques en largeur, en longueur ou en diagonale
                 {
-                    tab[i][j] = buildoneTab(tab, i, j, sign); // enfin, après avoir changé les cases voisines identiques en vide, on change la case du tableau où on est actuellement en vide aussi
-                    v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0;   // et on remet les booléens à 0
+                    tab[i][j] = buildoneTab(tab, i, j, sign); //on attribue un symbole aléatoire à la case du tableau[i][j] où on est actuellement
+                    v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0;   //et on remet tous les booléens à 0
                 }
             }
         }
@@ -419,14 +421,14 @@ void destroyTabforStart(char **tab, int length, int width, int sign) // renvoie 
 
 
 
-int checkSpaceNumber(char **tab2, int width, int length)
+int checkSpaceNumber(char **tab2, int width, int length) //compte le nombre d'espace dans la fonction tab2 pour calculer le score. Lié à destroyTab
 {
     int score = 0;
-    for (int i = 0; i < width; i++)
+    for (int i = 0; i < width; i++) //parcours en largeur
     {
         for (int j = 0; j < length; j++)
         {
-            if (tab2[i][j] == ' ')
+            if (tab2[i][j] == ' ') //s'il y a un espace, le score augmente d'une unité
             {
                 score++;
             }
@@ -437,18 +439,18 @@ int checkSpaceNumber(char **tab2, int width, int length)
 
 
 
-void destroyTab(char **tab, int length, int width, int sign, int score) // renvoie un tableau qui ne possède pas trois symboles côte à côte en longueur et en largeur
+void destroyTab(char **tab, int length, int width, int sign, int score) //renvoie un tableau qui détruit toutes les apparitions de 3 symboles alignés en longueur, largeur et diagonale
 {
     int v1 = 0, v2 = 0, v3 = 0, v4 = 0, v5 = 0, i2, j2;
     char **tab2;
-    tab2 = malloc((width + 1) * sizeof(char *)); // on fait un tableau de pointeurs pour pouvoir faire un double tableau de caractères
+    tab2 = malloc((width + 1) * sizeof(char *)); //on fait un second tableau de pointeur
     for (int a = 0; a < width; a++)
     {
         tab2[a] = malloc(length * sizeof(char));
     }
-    while (v1 != 1) // vérifie le tableau tant qu'il n'y a pas un tour sans modification du tableau : le booléen v1 prend 1 comme valeur au début et 0 s'il y a une modification par la suite
+    while (v1 != 1) //vérifie le tableau tant qu'il n'y a pas un tour sans modification du tableau : le booléen v1 prend 1 comme valeur au début et 0 s'il y a une modification par la suite
     {
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < width; i++) //le second tableau prend les même valeur que le premier
         {
             for (int j = 0; j < length; j++)
             {
@@ -456,62 +458,62 @@ void destroyTab(char **tab, int length, int width, int sign, int score) // renvo
             }
         }
         v1 = 1;
-        for (int i = 0; i < width; i++) // parcourt le tableau
+        for (int i = 0; i < width; i++) //parcours le tableau
         {
             for (int j = 0; j < length; j++)
             {
-                if ((j >= 1 && j < length - 1) && (tab[i][j] == tab[i][j - 1] && tab[i][j] == tab[i][j + 1])) // teste si trois symboles sont identiques horizontalement
+                if ((j >= 1 && j < length - 1) && (tab[i][j] == tab[i][j - 1] && tab[i][j] == tab[i][j + 1])) //teste si trois symboles sont identiques horizontalement
                 {
                     v2 = 1;
                 }
-                if (v2 == 1) // teste les symboles voisins en largeur si v2 vaut 1 (3 symboles identiques en longueur) et les remplace en vide (le vide correspond à un espace ' ' mais est appelé vide car il doit être remplacé ensuite) s'ils sont identiques
+                if (v2 == 1) //Si v2 == 1, alors remplace les 3 symboles identiques en longueur par un vide au même emplacement dans le deuxième tableau (car tab[i][j] == tab2[i][j])
                 {
                     tab2[i][j] = ' ';
                     tab2[i][j - 1] = ' ';
                     tab2[i][j + 1] = ' ';
-                    v1 = 0, v2 = 0;
+                    v1 = 0, v2 = 0; //remet le booléen de détection des trois symboles en longueur à 0
                 }
                 if ((i >= 1 && i < width - 1) && (tab[i][j] == tab[i - 1][j] && tab[i][j] == tab[i + 1][j])) // teste si trois symboles sont identiques verticalement
                 {
                     v3 = 1;
                 }
-                if (v3 == 1) // teste les symboles voisins en largeur si v3 vaut 1 (3 symboles identiques en largeur) et les remplace en vide(le vide correspond à un espace ' ' mais est appelé vide car plus logique) s'ils sont identiques
+                if (v3 == 1) //Si v3 == 1, alors remplace les 3 symboles identiques en largeur par un vide au même emplacement dans le deuxième tableau (car tab[i][j] == tab2[i][j])
                 {
                     tab2[i][j] = ' ';
                     tab2[i - 1][j] = ' ';
                     tab2[i + 1][j] = ' ';
-                    v1 = 0, v3 = 0;
+                    v1 = 0, v3 = 0; //remet le booléen de détection des trois symboles en largeur à 0
                 }
                 if (((i >= 1 && i < width - 1) && (j >= 1 && j < length - 1)) && (tab[i][j] == tab[i - 1][j + 1] && tab[i][j] == tab[i + 1][j - 1])) // teste si trois symboles sont identiques diagonalement de bas à gauche en haut à droite
                 {
                     v4 = 1;
                 }
-                if (v4 == 1)
+                if (v4 == 1) //Si v4 == 1, alors remplace les 3 symboles identiques en diagonale par un vide au même emplacement dans le deuxième tableau (car tab[i][j] == tab2[i][j])
                 {
                     tab2[i][j] = ' ';
                     tab2[i - 1][j + 1] = ' ';
                     tab2[i + 1][j - 1] = ' ';
-                    v1 = 0, v4 = 0;
+                    v1 = 0, v4 = 0; //remet le booléen de détection des trois symboles en diagonale de bas à gauche en haut à droite à 0
                 }
                 if (((i >= 1 && i < width - 1) && (j >= 1 && j < length - 1)) && (tab[i][j] == tab[i - 1][j - 1] && tab[i][j] == tab[i + 1][j + 1])) // teste si trois symboles sont identiques diagonalement de bas à droite en haut à gauche
                 {
                     v5 = 1;
                 }
-                if (v5 == 1)
+                if (v5 == 1) //Si v5 == 1, alors remplace les 3 symboles identiques en diagonale par un vide au même emplacement dans le deuxième tableau (car tab[i][j] == tab2[i][j])
                 {
                     tab2[i][j] = ' ';
                     tab2[i - 1][j - 1] = ' ';
                     tab2[i + 1][j + 1] = ' ';
-                    v1 = 0, v5 = 0;
+                    v1 = 0, v5 = 0; //remet le booléen de détection des trois symboles en diagonale de bas à droite en haut à gauche à 0
                 }
             }
         }
-        score += checkSpaceNumber(tab2, width, length);
-        system("clear");
+        score += checkSpaceNumber(tab2, width, length); //dans cette configuration, le nombre de symboles détruits correspond au nombre de vide dans le second tableau, et c'est cette valeur que prend le score 
+        system("clear"); //on affiche alors le tableau où les cases détruites ont un fond rouge pour faire une transition avec la gravité d'où le nom
         showTabTransition(tab, tab2, length, width, score);
         sleep(1);
-        Gravity(tab2, length, width, sign, score);
-        for (int i = 0; i < width; i++)
+        gravity(tab2, length, width, sign, score); //puis on applique la gravité
+        for (int i = 0; i < width; i++) //enfin le premier tableau prend les valeurs du second tableau
         {
             for (int j = 0; j < length; j++)
             {
@@ -519,17 +521,17 @@ void destroyTab(char **tab, int length, int width, int sign, int score) // renvo
             }
         }
     }
-    tab[width][0] = score;
+    tab[width][0] = score; //le tableau à une ligne bonus où on y stocke le score pour l'emporter hors de la fonction car un double tableau de pointeurs n'a pas besoin d'être retourner
 }
 
 
 
 int checkTab(char **tab, int length, int width) // sert à vérifier si un échange est possible dans le tableau
 {
-    int v = 0;                      // valeur de vérité
-    for (int i = 0; i < width; i++) // parcourt le tableau
+    int v = 0; //booléen qui prend 1 si un échange est possible et 0 sinon
+    for (int i = 0; i < width; i++) //parcours le tableau
     {
-        for (int j = 0; j < length; j++) // teste si trois symboles sont identiques en largeur ou en longueur et met la valeur de vérité à 1 si c'est le cas
+        for (int j = 0; j < length; j++) //teste si trois symboles sont identiques en largeur ou en longueur et met le booléen à 1 si c'est le cas
         {
             if ((i >= 1 && i < width - 1) && (tab[i][j] == tab[i - 1][j] && tab[i][j] == tab[i + 1][j]))
             {
@@ -549,29 +551,29 @@ int checkTab(char **tab, int length, int width) // sert à vérifier si un écha
             }
         }
     }
-    return v; // renvoie la valeur de vérité qui sert pour des conditions. Si v vaut 1 (le tableau est échangable), alors la condition if est vraie sinon elle est fausse
+    return v; // renvoie le booléen qui sert pour des conditions. Si v vaut 1 (le tableau est échangable), alors la condition if est vraie sinon elle est fausse
 }
 
 
 
-int checkEnd(char **tab, int length, int width)
+int checkEnd(char **tab, int length, int width) //sert à vérifier si l'on peut encore aligner 3 symboles avec les 4 échanges symboles
 {
-    char temp1, temp2;
-    int v = 0;
-    for (int i = 0; i < width; i++)
+    char temp1, temp2; //on créé deux variables char
+    int v = 0; //et un booleén
+    for (int i = 0; i < width; i++) //on fait un parcours du tableau
     {
         for (int j = 0; j < length; j++)
         {
-            if (i > 0)
+            if (i > 0) //pour éviter d'échanger avec des données non initialisés, on fait i>0 pour un échange avec le haut, j>0 avec la gauche...
             {
-                temp1 = tab[i][j];
+                temp1 = tab[i][j]; //puis les deux variables char prennent les valeur de la case du tableau où on est avec le parcours (tab[i][j]) et de celle à gauche (tab[i-1][j])
                 temp2 = tab[i - 1][j];
-                tab[i][j] = temp2;
+                tab[i][j] = temp2; //et on échange les valeurs des deux cases du tableau
                 tab[i - 1][j] = temp1;
-                v = checkTab(tab, length, width);
-                tab[i][j] = temp1;
+                v = checkTab(tab, length, width); //puis on vérifie si un échange est possible avec cet configuration avec checkTab
+                tab[i][j] = temp1; //et on redonne au cases du tableau leur valeur de départ
                 tab[i - 1][j] = temp2;
-                if (v == 1)
+                if (v == 1) //et on renvoie 1 si un échange est possible. On le fait maintenant pour éviter que v se voit attribuer 0 avec un autre test
                 {
                     return v;
                 }
@@ -625,23 +627,24 @@ int checkEnd(char **tab, int length, int width)
 
 
 
-int createLength_and_Width_withoutLimits(int *tab)
+int createLength_and_Width_withoutLimits(int *tab) //cette fonction lié à createLength_and_Width permet comme son nom l'indique de créer des tableaux sans limites
 {
-    printf("%sWARNING: you are in the limitless version of CY-crush.\nYou can create boards of any size you want.\nHowever, the game may run very slowly regularly.\nIf you put a length greater than 32 or a width greater than 99, the game cannot be played and your table will only be displayed.\nIf you put a length greater than 63 or a width greater than 99, the display will not be able to be done correctly but will still be left.\nPress '-1' again to switch back to limit version.%s\n\nATTENTION INFORMATIONS IMPORTANTES : \n-ce jeu est deconseillé au épileptiques\n-il est déconseillé de faire des grands tableaux avec peu de symboles car le programme pourrait ne jamais se terminer\n-ne modifiez pas les fichiers textes associez au programme (length,width,score et tableau).\nSi vous le faites, remettez les anciennes valeurs ou supprimez le fichier (supprimer le fichier vous fera perdre votre sauvegarde).\n\n", CB_RED, CB_WHITE);
-    int length = 0, width = 0, trash = 0;
+    printf("%sWARNING: you are in the limitless version of CY-crush.\nYou can create boards of any size you want.\nHowever, the game may run very slowly regularly.\nIf you put a length greater than 32 or a width greater than 99, the game cannot be played and your table will only be displayed.\nIf you put a length greater than 63 or a width greater than 99, the display will not be able to be done correctly but will still be left.\nYou can make arrays that do not allow any combination in this mode (for example an array of size 1x1 or 2x1).\nPress '-1' again to switch back to limit version.%s\n\nWARNING IMPORTANT INFORMATION: \n-this game is not recommended for people with epilepsy\n-it is not recommended to make large tables with few symbols because the program may never end\n-do not modify the text files associated with the program ( length,width,score and array).\nIf you do, put the old values back or delete the file (deleting the file will cause you to lose your save).\n\n", CB_RED, CB_WHITE);
+    //le printf ci-dessus indique les divers problèmes, précautions à avoir et consignes lié à la saisie de la longueur et de la largeur et au jeu en général
+    int length = 0, width = 0, trash = 0; 
     printf("Select a number of boxes with a length greater than 1: ");
-    scanf("%d", &length);
-    while (trash != '\n' && trash != EOF)
+    scanf("%d", &length); //on récupére la valeur si c'est un entier
+    while (trash != '\n' && trash != EOF) //si ce n'est pas un entier, la variable trash va récupérer tous les caractères
     {
         trash = getchar();
     }
-    trash = 0;
-    if (length == -1)
+    trash = 0; //on vide ensuite la variable
+    if (length == -1) //on passe de createLength_and_Width_withoutLimits à createLength_and_Width en entrant '-1' lors de la saisie de la longueur ou de la largeur
     {
-        system("clear");
+        system("clear"); //lors de ce passage on rénitialise la console pour que ce soit plus compréhensible à lire
         return createLength_and_Width(tab);
     }
-    while (length < 1)
+    while (length < 1) //si la valeur de la longueur n'est pas correcte, on redemande en boucle à l'utilisateur saisir la bonne valeur de la même façon que précedemment
     {
         printf("Please select a number of boxes with a length greater than 1: ");
         scanf("%d", &length);
@@ -657,7 +660,7 @@ int createLength_and_Width_withoutLimits(int *tab)
         }
     }
     printf("Select a number of boxes with a width greater than 1: ");
-    scanf("%d", &width);
+    scanf("%d", &width); //puis on rentre la largeur de la même façon que précedemment
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
@@ -668,7 +671,7 @@ int createLength_and_Width_withoutLimits(int *tab)
         system("clear");
         return createLength_and_Width(tab);
     }
-    while (width < 1)
+    while (width < 1) //on redemande en boucle à l'utilisateur de saisir la bonne valeur de la même façon que précedemment
     {
         printf("Please select a number of boxes with a width greater than 1: ");
         scanf("%d", &width);
@@ -683,30 +686,31 @@ int createLength_and_Width_withoutLimits(int *tab)
             return createLength_and_Width(tab);
         }
     }
-    tab[0] = length;
+    tab[0] = length; //puis met les valeurs dans un tableau de taille 2. Comme on a un pointeur sur le tableau en paramètre, on ne doit rien retourner
     tab[1] = width;
-    return 0;
+    return 0; //on met un return 0 par précaution
 }
 
 
 
-int createLength_and_Width(int *tab)
+int createLength_and_Width(int *tab) //cette fonction lié à createLength_and_Width_withoutLimits permet comme son nom l'indique de créer des tableaux dont la taille est limité
 {
-    printf("You are in the limited version of CY-crush.\nIn this version, the number of squares in length and width is limited to 26.\nPress '-1' when choosing squares in length or width to switch to the version limitless.\n\nATTENTION INFORMATIONS IMPORTANTES : \n-ce jeu est deconseillé au épileptiques\n-il est déconseillé de faire des grands tableaux avec peu de symboles car le programme pourrait ne jamais se terminer\n-ne modifiez pas les fichiers textes associez au programme (length,width,score et tableau).\nSi vous le faites, remettez les anciennes valeurs ou supprimez le fichier (supprimer le fichier vous fera perdre votre sauvegarde).\n\n");
+    printf("You are in the limited version of CY-crush.\nIn this version, the number of squares in length and width is limited to 26.\nPress '-1' when choosing squares in length or width to switch to the version limitless.\n\nWARNING IMPORTANT INFORMATION: \n-this game is not recommended for people with epilepsy\n-it is not recommended to make large tables with few symbols because the program may never end\n-do not modify the text files associated with the program ( length,width,score and array).\nIf you do, put the old values back or delete the file (deleting the file will cause you to lose your savegame).\n\n");
+    //le printf ci-dessus indique les divers problèmes, précautions à avoir et consignes lié à la saisie de la longueur et de la largeur et au jeu en général
     int width = 0, length = 0, trash = 0;
     printf("Select a number of boxes of length between 1 and 26: ");
-    scanf("%d", &length);
-    while (trash != '\n' && trash != EOF)
+    scanf("%d", &length); //on récupére la valeur si c'est un entier
+    while (trash != '\n' && trash != EOF) //si ce n'est pas un entier, la variable trash va récupérer tous les caractères
     {
         trash = getchar();
     }
-    trash = 0;
+    trash = 0; //on vide ensuite la variable
     if (length == -1)
     {
         system("clear");
-        return createLength_and_Width_withoutLimits(tab);
+        return createLength_and_Width_withoutLimits(tab); //on passe de createLength_and_Width à createLength_and_Width_withoutLimits en entrant '-1' lors de la saisie de la longueur ou de la largeur
     }
-    while (length < 1 || length > 26)
+    while (length < 1 || length > 26) //si la valeur de la longueur n'est pas correcte, on demande en boucle à l'utilisateur de saisir la bonne valeur de la même façon que précedemment
     {
         printf("Please select a number of boxes of length between 1 and 26: ");
         scanf("%d", &length);
@@ -722,7 +726,7 @@ int createLength_and_Width(int *tab)
         }
     }
     printf("Select a number of boxes of width between 1 and 26: ");
-    scanf("%d", &width);
+    scanf("%d", &width); //puis on rentre la largeur de la même façon que précedemment
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
@@ -733,7 +737,7 @@ int createLength_and_Width(int *tab)
         system("clear");
         return createLength_and_Width_withoutLimits(tab);
     }
-    while (width < 1 || width > 26)
+    while (width < 1 || width > 26) //on demande en boucle à l'utilisateur de saisir la bonne valeur de la même façon que précedemment
     {
         printf("Please select a number of boxes of width between 1 and 26: ");
         scanf("%d", &width);
@@ -748,26 +752,33 @@ int createLength_and_Width(int *tab)
             return createLength_and_Width_withoutLimits(tab);
         }
     }
-    tab[0] = length;
+    if(width < 3 && length < 3) //si jamais la longueur et la largeur sont plus petits que 3, alors on ne peut pas faire de combinaisons
+    {
+        printf("No combination possible, please try again in 3 seconds.\n");
+        sleep(3);
+        system("clear");
+        return createLength_and_Width(tab);
+    }
+    tab[0] = length; //puis met les valeurs dans un tableau de taille 2. Comme on a un pointeur sur le tableau en paramètre, on ne doit rien retourner
     tab[1] = width;
-    return 0;
+    return 0; //on met un return 0 par précaution
 }
 
 
 
-int createSign(int* tab)
+int createSign(int* tab) //cette fonction permet de choisir le nombre de symboles entre 4 et 6
 {
     int sign = 0, trash = 0;
     printf("Select a number of symbols between 4 and 6: ");
-    scanf("%d", &sign);
-    while (trash != '\n' && trash != EOF)
+    scanf("%d", &sign); //on récupére la valeur si c'est un entier
+    while (trash != '\n' && trash != EOF) //si ce n'est pas un entier, la variable trash va récupérer tous les caractères
     {
         trash = getchar();
     }
-    trash = 0;
-    while (sign < 4 || sign > 6)
+    trash = 0; //on vide ensuite la variable
+    while (sign < 4 || sign > 6) //si le nombre de symboles n'est pas correct, on demande en boucle à l'utilisateur de saisir la bonne valeur de la même façon que précedemment
     {
-        printf("Please select a number of symbols between 4 and 6: ");
+        printf("Please select a number of symbols between 4 and 6: "); 
         scanf("%d", &sign);
         while (trash != '\n' && trash != EOF)
         {
@@ -775,30 +786,26 @@ int createSign(int* tab)
         }
         trash = 0;
     }
-    return sign;
+    return sign; //enfin on renvoie le nombre de symboles;
 }
 
 
 
-int wantStop()
+int wantStop() //cette fonction demande à l'utilisateur s'il veut arrêter de jouer
 {
     int trash = 0;
     char wantStop;
-    printf("Do you want to stop here (print 'y' or 'Y' for yes and something else for no) : ");
-    wantStop = getchar();
+    printf("Do you want to stop here (print 'y' or 'Y' for yes and something else for no) : "); 
+    wantStop = getchar(); //on prend le premier caractère et trash récupère tous les autres
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
     }
-    if (wantStop == 'Y')
+    if (wantStop == 'y' || wantStop == 'Y') //si le joueur dit oui, on renvoie 1
     {
         return 1;
     }
-    if (wantStop == 'y')
-    {
-        return 1;
-    }
-    else
+    else //sinon non
     {
         return 0;
     }
@@ -806,29 +813,28 @@ int wantStop()
 
 
 
-char **Placeswitch(char **tab, int length, int width, int score)
+char **Placeswitch(char **tab, int length, int width, int score) //cette fonction permet d'échanger deux cases côte à côte horizontalement ou verticalement
 {
-    int x = 0, y = 0, x2 = 0, y2 = 0, trash = 0, S, H;
+    int x = 0, y = 0, x2 = 0, y2 = 0, trash = 0, S;
     char m1, m2, switchValidate;
-    do{
     do
     {
-        system("clear");
+        system("clear"); //on affiche le tableau
         showTab(tab,length,width,score);
-        S = 0, H = 0, switchValidate = 0;
-        printf("What's the letter of the first place : ");
-        x = getchar(); //prendre la première lettre/chiffre
+        S = 0, switchValidate = 0;
+        printf("What's the letter of the first place : "); //on récupère les coordonées de la première case
+        x = getchar(); //on prend le premier caractère correspondant à la coordonnée en longueur et trash récupère tous les autres
         while (trash != '\n' && trash != EOF)
-        { //vider le buffer
+        {
             trash = getchar();
         }
         trash = 0;
-        if (x >= 97 && x <= 122)
+        if (x >= 97 && x <= 122) //si la lettre est en minuscule, on la met en majuscule
         {
             x = toupper(x);
         }
-        x -= 'A';
-        while (x < 0 || x > width - 1)
+        x -= 'A'; //puis on retire la valeur de la première lettre ce qui nous donne la coordonnée en longueur de la première case à échanger
+        while (x < 0 || x > length - 1) //on demande à la nouveau la bonne valeur tant que ce n'est pas une lettre comprise dans le tableau
         {
             printf("Please select again the letter of the first place : ");
             x = getchar();
@@ -844,13 +850,13 @@ char **Placeswitch(char **tab, int length, int width, int score)
             x -= 'A';
         }
         printf("Next, what's the number of the first place : ");
-        scanf("%d", &y);
+        scanf("%d", &y); //on demande ensuite le numéro de la ligne correspondant à la coordonnée en largeur et trash récupère tous les caractères entrés
         while (trash != '\n' && trash != EOF)
         {
             trash = getchar();
         }
         trash = 0;
-        while (y <= 0 || y > width)
+        while (y <= 0 || y > width) //si la coordonnée entrée n'est un entier compris dans le tableau, on demande à nouveau la valeur
         {
             printf("Please select again the number of the first place : ");
             scanf("%d", &y);
@@ -860,12 +866,12 @@ char **Placeswitch(char **tab, int length, int width, int score)
             }
             trash = 0;
         }
-        y--;
-        printf("La case choisie est (%c,%d).\n\n", (x + 65), (y + 1));
-        printf("What's the letter of the second place : ");
-        x2 = getchar(); // prendre la première lettre/chiffre
+        y--; //puis on diminue d'une unité car on doit augmenter la coordonnée de 1 lors de l'affichage et on obtient la coordonée en largeur de la première case
+        printf("The box chosen is (%c,%d).\n\n", (x + 65), (y + 1));
+        printf("What's the letter of the second place : "); //on fait la même chose pour la deuxième case
+        x2 = getchar(); 
         while (trash != '\n' && trash != EOF)
-        { // vider le buffer
+        { 
             trash = getchar();
         }
         trash = 0; 
@@ -874,12 +880,12 @@ char **Placeswitch(char **tab, int length, int width, int score)
             x2 = toupper(x2);
         }
         x2 -= 'A';
-        while (x2 < 0 || x2 > width - 1)
+        while (x2 < 0 || x2 > length - 1)
         {
             printf("Please, select again the letter of the second place : ");
-            x2 = getchar(); // prendre la première lettre/chiffre
+            x2 = getchar(); 
             while (trash != '\n' && trash != EOF)
-            { // vider le buffer
+            { 
                 trash = getchar();
             }
             trash = 0; 
@@ -907,14 +913,8 @@ char **Placeswitch(char **tab, int length, int width, int score)
             trash = 0;
         }
         y2--;
-        if((x!=x2+1 && x!=x2-1 && x!= x2) || (y!=y2+1 && y!=y2-1 && y!= y2)||(x==x2+1 && y==y2+1)||(x==x2-1 && y==y2+1)||(x==x2+1 && y==y2-1)||(x==x2-1 && y==y2-1)){
-            printf("Try again to switch caracter's places in 3 secondes.\n");
-        sleep(3);
-        }
-        } while ((x!=x2+1 && x!=x2-1 && x!= x2) || (y!=y2+1 && y!=y2-1 && y!= y2)||(x==x2+1 && y==y2+1)||(x==x2-1 && y==y2+1)||(x==x2+1 && y==y2-1)||(x==x2-1 && y==y2-1));
-
-        printf("La case choisie est (%c,%d).\n\n", (x2 + 65), (y2 + 1));
-        printf("Est-ce bien cette case que vous avez choisi ? (print 'y' or 'Y' for yes and something else for no) : ");
+        printf("The box chosen is (%c,%d).\n\n", (x2 + 65), (y2 + 1));
+        printf("Is this the box you chose ? (print 'y' or 'Y' for yes and something else for no) : "); //enfin on demande à l'utilisateur de valider son choix
         switchValidate = getchar();
         while (trash != '\n' && trash != EOF)
         { // vider le buffer
@@ -922,14 +922,19 @@ char **Placeswitch(char **tab, int length, int width, int score)
         }
         trash = 0;
         printf("\n");
-        if(switchValidate != 'y' && switchValidate != 'Y')
+        if(switchValidate != 'y' && switchValidate != 'Y') //si l'utilisateur dit oui, la variable S prend 1. Si S vaut 1, la boucle est rénitialisé
         {
-            H = 1;
-        }
-        else if(x == x2 && y == y2)
-        { // vérifier que les deux soit différents
             S = 1;
-            printf("Same case! Try again!\n");
+        }
+        else if(x == x2 && y == y2) //on teste différentes erreurs possibles et S prend 1 si elles sont présentes 
+        { 
+            S = 1;
+            printf("Same case ! Try again !\n");
+        }
+        else if(((x != x2-1 && x2 != x-1) || (y!=y2)) && ((y != y2-1 && y2 != y-1) || (x!=x2)))
+        {
+            S = 1;
+            printf("The two boxes chosen are not neighbors vertically or horizontally !\n");
         }
         else
         {
@@ -938,37 +943,43 @@ char **Placeswitch(char **tab, int length, int width, int score)
             tab[y][x] = m2;
             tab[y2][x2] = m1;
             if (checkTab(tab, length, width))
-            { // vérifier que l'on peut détruire après l'échange
-                return tab;
+            {
+                return tab; //enfin si aucune erreur n'est détecté, on renvoie le tableau
             }
             else
             {
                 tab[y2][x2] = m2;
                 tab[y][x] = m1;
-                H = 1;
-                printf("Cannot destroy anything! Try again!\n");
+                S = 1;
+                printf("Cannot destroy anything ! Try again !\n");
             }
         }
-    }while(S==1 || H==1);
+        if(S==1)
+        {
+            printf("Try to swap boxes again in 3 seconds.\n");
+            sleep(3);
+        }
+    } while (S == 1);
 }
 
 
-int roundNumber()
+
+int roundNumber() //Cette fonction permet à l'utilisateur de choisir un nombre de tours
 {
     int roundNumber = 0;
     char roundValidate, trash = 0;
-    printf("Do you want to define a number of round(s) ? (print 'y' or 'Y' for yes and something else for no) : ");
-    roundValidate = getchar();
+    printf("Do you want to define a number of rounds ? (print 'y' or 'Y' for yes and something else for no) : ");
+    roundValidate = getchar(); //on prend le premier caractère et trash récupère tous les autres
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
     }
     trash = 0;
-    if(roundValidate == 'y' || roundValidate == 'Y')
+    if(roundValidate == 'y' || roundValidate == 'Y') //si l'utilisateur dit oui, on lui demande ensuite son nombre de tours et trash prend les éventuels caractères
     {
         while(roundNumber <= 0)
         {
-            printf("choose a number of round(s) higher than 0 : ");
+            printf("Choose a number of rounds greater than 0 : ");
             scanf("%d",&roundNumber);
             while (trash != '\n' && trash != EOF)
             {
@@ -980,54 +991,42 @@ int roundNumber()
     }
     else
     {
-        return -1;
+        return -1; //si l'utilisateur ne veut pas mettre de tours, on renvoie -1
     }
 }
 
 
 
-// Fonction pour sauvegarder le score dans un fichier
-void saveScore(int score) 
+
+void saveScore(int score) //sauvegarde le score dans un fichier. Les fonctions saveWidth et saveLength fonctionnent de la même façon
 {
-    FILE* fichier = fopen("score.txt", "w");
-    if (fichier != NULL) 
+    FILE* file = fopen("score.txt", "w"); //on créé le fichier score
+    if (file != NULL) 
     {
-        fprintf(fichier, "%d", score);
-        fclose(fichier);
-        printf("Score successfuly saved.\n");
+        fprintf(file, "%d", score); //puis on y inscrit le score du joueur
+        fclose(file);
+        printf("Score saved successfully.\n"); //et on affiche que le score a bien été sauvegardé (seulement pour le score)
     } 
     else 
     {
-        printf("error with the opening of the score file.\n");
+        printf("Error opening score file.\n"); //on affiche qu'il y'a une erreur si on n'a pas pu créé le fichier score
     }
 }
-void saveScore(int totaltime) 
-{
-    FILE* fichier = fopen("time.txt", "w");
-    if (fichier != NULL) 
-    {
-        fprintf(fichier, "%d", time);
-        fclose(fichier);
-        printf("time suucessfuly saved.\n");
-    } 
-    else 
-    {
-        printf("error with the opening of the time file.\n");
-    }
-}
+
+
 
 
 void saveLength(int length) 
 {
-    FILE* fichier = fopen("length.txt", "w");
-    if (fichier != NULL) 
+    FILE* file = fopen("length.txt", "w");
+    if (file != NULL) 
     {
-        fprintf(fichier, "%d", length);
-        fclose(fichier);
+        fprintf(file, "%d", length);
+        fclose(file);
     } 
     else 
     {
-        printf("error with the opening of the length file.\n");
+        printf("Error opening file length.\n");
     }
 }
 
@@ -1035,107 +1034,96 @@ void saveLength(int length)
 
 void saveWidth(int width) 
 {
-    FILE* fichier = fopen("width.txt", "w");
-    if (fichier != NULL) 
+    FILE* file = fopen("width.txt", "w");
+    if (file != NULL) 
     {
-        fprintf(fichier, "%d", width);
-        fclose(fichier);
+        fprintf(file, "%d", width);
+        fclose(file);
     } 
     else 
     {
-        printf("error with the opening of the width file.\n");
+        printf("Error opening file width.\n");
     }
 }
 
 
 
-// Fonction pour sauvegarder le tableau de bonbons dans un fichier
-void saveTab(char** tab, int length, int width) {
-    FILE* fichier = fopen("tab.txt", "w");
-    if (fichier != NULL) {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < length; j++) {
-                fprintf(fichier, "%c", tab[i][j]);
-            }
-            fprintf(fichier, "\n");
-        }
-        fclose(fichier);
-        printf("Tab successfuly loaded.\n");
-    } 
-    else 
-    {
-        printf("error with the opening of the tab file.\n");
-    }
-}
-
-
-
-void saveGame(char** tab, int length, int width, int score)
+void saveTab(char** tab, int length, int width) //fonction pour sauvegarder le tableau de bonbons dans un fichier
 {
-    char saveValidate = 0, trash = 0;
+    FILE* file = fopen("tab.txt", "w"); 
+    if (file != NULL) {
+        for (int i = 0; i < width; i++) //on fait un parcourt du tableau avec width et length, puis on enregistre les symboles du tableau en revenant à la ligne à chaque fin de ligne du tableau
+        {
+            for (int j = 0; j < length; j++) 
+            {
+                fprintf(file, "%c", tab[i][j]);
+            }
+            fprintf(file, "\n");
+        }
+        fclose(file);
+        printf("Table saved successfully.\n");
+    } 
+    else 
+    {
+        printf("Error while opening table file.\n");
+    }
+}
+
+
+
+void saveGame(char** tab, int length, int width, int score, int begin) //demande au joueur s'il veut sauvegarder le tableau et le fait si c'est le cas
+{
+    char saveValidate = 0, trash = 0, totalTime = 0;
     printf("Do you want to save your actual game ? (print 'y' or 'Y' for yes and something else for no) : ");
-    saveValidate = getchar();
+    saveValidate = getchar(); //on prend le premier caractère et trash récupère tous les autres
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
     }
     trash = 0;
-    if(saveValidate == 'y' || saveValidate == 'Y')
+    if(saveValidate == 'y' || saveValidate == 'Y') //si l'utilisateur dit oui, on enregistre la longueur et la largeur de son tableau ainsi que le tableau et son score
     {
         saveLength(length);
         saveWidth(width);
         saveScore(score);
         saveTab(tab,length,width);
     }
-    printf("\n");
+    printf("\n"); 
 }  
 
 
 
-// Fonction pour charger le score à partir d'un fichier
-int loadScore() {
+int loadScore() //fonction pour charger le score à partir d'un fichier. Les fonctions loadWidth et loadLength fonctionnent de la même façon
+{
     int score = 0;
-    FILE* fichier = fopen("score.txt", "r");
-    if (fichier != NULL) 
+    FILE* file = fopen("score.txt", "r"); //on ouvre le fichier score.txt
+    if (file != NULL) 
     {
-        fscanf(fichier, "%d", &score);
-        fclose(fichier);
-        printf("Score successfuly loaded.\n");
+        fscanf(file, "%d", &score); //et on y récupère la valeur qu'on y a enregistré précedemment
+        fclose(file);
+        printf("Score loaded successfully.\n");
     } 
     else 
     {
-        printf("error with the opening of the score file.\n");
+        printf("Error opening score file.\n");
     }
     return score;
 }
 
-int loadTime() {
-    int time = 0;
-    FILE* fichier = fopen("time.txt", "r");
-    if (fichier != NULL) 
-    {
-        fscanf(fichier, "%d", &time);
-        fclose(fichier);
-        printf("Time successfuly loaded.\n");
-    } 
-    else 
-    {
-        printf("error with the opening of the time file.\n");
-    }
-    return time;
-}
+
+
 
 int loadLength() {
     int length = 0;
-    FILE* fichier = fopen("length.txt", "r");
-    if (fichier != NULL) 
+    FILE* file = fopen("length.txt", "r");
+    if (file != NULL) 
     {
-        fscanf(fichier, "%d", &length);
-        fclose(fichier);
+        fscanf(file, "%d", &length);
+        fclose(file);
     } 
     else 
     {
-        printf("error with the opening of the length file.\n");
+        printf("Error opening file length.\n");
     }
     return length;
 }
@@ -1144,59 +1132,60 @@ int loadLength() {
 
 int loadWidth() {
     int width = 0;
-    FILE* fichier = fopen("width.txt", "r");
-    if (fichier != NULL) 
+    FILE* file = fopen("width.txt", "r");
+    if (file != NULL) 
     {
-        fscanf(fichier, "%d", &width);
-        fclose(fichier);
+        fscanf(file, "%d", &width);
+        fclose(file);
     } 
     else 
     {
-        printf("error with the opening of the width file.\n");
+        printf("Error opening file width.\n");
     }
     return width;
 }
 
 
 
-// Fonction pour charger le tableau de bonbons à partir d'un fichier
-void loadTab(char** tab, int length, int width) {
-    FILE* fichier = fopen("tab.txt", "r");
-    if (fichier != NULL) {
-        for (int i = 0; i < width; i++) 
+
+void loadTab(char** tab, int length, int width) //fonction pour charger le tableau de bonbons à partir d'un fichier 
+{
+    FILE* file = fopen("tab.txt", "r");
+    if (file != NULL) {
+        for (int i = 0; i < width; i++) //parcourt du tableau
         {
             for (int j = 0; j < length; j++) 
             {
-                fscanf(fichier, "%c", &tab[i][j]);
+                fscanf(file, "%c", &tab[i][j]); //on donne au tableau les valeurs que l'on a enregistré précedemment
             }
-            fscanf(fichier, "\n");
+            fscanf(file, "\n");
         }
-        fclose(fichier);
-        printf("Tab successfuly loaded.\n");
+        fclose(file);
+        printf("Table loaded successfully.\n");
     } 
     else 
     {
-        printf("error with the opening of the tab file.\n");
+        printf("Error while opening table file.\n");
     }
 }
 
 
 
-int wantLoadGame()
+int wantLoadGame() //on demande à l'utilisateur s'il veut charger une partie qu'il a précedemment sauvegardé
 {
     char loadValidate = 0, trash = 0;
     printf("Do you want to load the game you save ? (print 'y' or 'Y' for yes and something else for no) : ");
-    loadValidate = getchar();
+    loadValidate = getchar(); //on prend le premier caractère et trash récupère tous les autres
     while (trash != '\n' && trash != EOF)
     {
         trash = getchar();
     }
     trash = 0;
-    if(loadValidate == 'y' || loadValidate == 'Y')
+    if(loadValidate == 'y' || loadValidate == 'Y') //si l'utilisateur dit oui, on renvoie 1
     {
         return 1;
     }
-    else
+    else //sinon on renvoie 0
     {
         return 0;    
     }
@@ -1208,36 +1197,36 @@ int wantLoadGame()
 void loadGame(char** tab, int length, int width)
 {
     int score = loadScore();
-    loadTab(tab,length,width);
-    tab[width][0] = score;
+    loadTab(tab,length,width); //un nouveau tableau récupère les symboles du tableau sauvegardé 
+    tab[width][0] = score; //la ligne bonus du tableau récupère le score
 }
 
 
 
-void game(char** tab,int length, int width, int sign, int score, int roundNmb)
+void game(char** tab,int length, int width, int sign, int score, int roundNmb, int begin) //le fichier principal qui permet de jouer au jeu
 {
-    while (checkEnd(tab, length, width))
+    while (checkEnd(tab, length, width)) //tant que des échanges sont possibles
     {
-        tab = Placeswitch(tab, length, width, score);
-        showTab(tab, length, width, score);
-        destroyTab(tab, length, width, sign, score);
-        score = tab[width][0];
-        roundNmb--;
+        tab = Placeswitch(tab, length, width, score); //on échange des cases voisines
+        showTab(tab, length, width, score);  //puis on affiche le tableau
+        destroyTab(tab, length, width, sign, score);  //on détruit le tableau avec les cases échangés
+        score = tab[width][0]; //le score est actualisé
+        roundNmb--; //si on a définit un nombre de tour, il diminue d'un
         if(roundNmb < 0)
         {
-            //ne rien faire
+            //ne rien faire. C'est le cas où l'on a refusé de choisir un nombre de tour
         }
-        else if(roundNmb == 0)
+        else if(roundNmb == 0) //le jeu s'arrête
         {
-            printf("Game's Over!\n\n");
+            printf("It's over !\n\n");
             break;
         }
-        else
+        else //on annonce au joueur combien de tours il lui reste
         {
-            printf("You have %d rounds.\n\n",roundNmb);
+            printf("You have %d rounds left.\n\n",roundNmb);
         }
-        saveGame(tab,length,width,score);
-        if (wantStop())
+        saveGame(tab,length,width,score,begin); //on propose au joueur de sauvegarder sa partie
+        if (wantStop()) //enfin on demande au joueur s'il veut arrêter de jouer. On termine aussi le jeu si c'est le cas
         {
             printf("\n");
             break;
@@ -1246,121 +1235,218 @@ void game(char** tab,int length, int width, int sign, int score, int roundNmb)
 }
 
 
-int checkGame()
+int checkGame() //cette fonction permet de savoir si l'on a une partie correctement sauvegardé en mémoire
 {
     int gameExist;
-    FILE* fichier = fopen("score.txt", "r");
-    if(fichier != NULL)
+    FILE* file = fopen("score.txt", "r"); //on regarde si on a un score enregistré
+    if(file != NULL)
     {
-        fclose(fichier);
-        FILE* fichier = fopen("time.txt", "r");
-        if(fichier != NULL)
+        fclose(file);
+        FILE* file = fopen("length.txt", "r"); //puis une longueur
+        if(file != NULL)
         {
-            fclose(fichier);
-            FILE* fichier = fopen("length.txt", "r");
-            if(fichier != NULL)
+            fclose(file);
+            FILE* file = fopen("width.txt", "r"); //puis une largeur
+            if(file != NULL)
             {
-                fclose(fichier);
-                FILE* fichier = fopen("width.txt", "r");
-                if(fichier != NULL)
+                fclose(file);
+                FILE* file = fopen("tab.txt", "r"); //puis un tableau
+                if(file != NULL)
                 {
-                    fclose(fichier);
-                    FILE* fichier = fopen("tab.txt", "r");
-                    if(fichier != NULL)
-                    {
-                        fclose(fichier);
-                        return 1;
-                    }
+                    fclose(file);
+                    return 1; //et on revoie 1 si l'on a tout
                 }
             }
         }
     }
-    return 0;
+    return 0; //sinon 0
 }
 
 
 
-int savehighscore(int score){
-    FILE *file = fopen("highscore.txt", "w"); //Ouvrir le fichier highscore en mode lecture
-    if (file == NULL) {
-        printf("Impossible to create highscore's file.\n");
-        fclose(file);
-        return 1;
-    }
-    FILE *tempFile = fopen("temp_highscore.txt", "w"); //Créer un nouveau fichier temporaire en mode écriture
-    if (tempFile == NULL) {
-        printf("Impossible to create temporary file.\n");
-        fclose(file);
-        return 1;
-    }
-    char newName[256];//pour avoir le nom de la personne
-    printf("what's your name/surname?\n");
-    scanf("%s", newName);
-    // Lire le contenu du fichier highscore ligne par ligne
-    char buffer[256];
-    int scoreUpdated = 0; // Indicateur pour savoir si le score a été mis à jour
-
-    while (fgets(buffer, sizeof(buffer), file) != NULL) {
-        char *name = strtok(buffer, ",");
-        char *scoreStr = strtok(NULL, ",");
-        int scoreecr = atoi(scoreStr);
-        if (scoreecr < score && !scoreUpdated) {// Vérifier si le score actuel est inférieur au nouveau score
-            scoreecr = score;// Modifier le score
-            strcpy(name, newName); // Mettre à jour le nom si nécessaire
-            scoreUpdated = 1; // Indiquer que le score a été mis à jour
-        }
-        fprintf(tempFile, "%s,%d\n", name, score); // Écrire les données modifiées dans le fichier temporaire   
-    }
-    if (!scoreUpdated) {
-        fprintf(tempFile, "%s,%d\n", newName, score);// Si le score n'a pas encore été mis à jour et qu'il n'y a plus de scores à lire
-    // Ajouter le nouveau score à la fin de la liste
-    }
-    fclose(file);
-    fclose(tempFile);
-    remove("highscore.txt");// Supprimer l'ancien fichier highscore
-    rename("temp_highscore.txt", "highscore.txt");// Renommer le fichier temporaire avec le nom de l'ancien fichier highscore
-    return 1;
-}
-
-
-
-void loadhighscore(){
-    int linemax=10;
-    int linepr=0;
-     FILE *file = fopen("highscore.txt", "r"); //Ouvrir le fichier highscore en mode lecture
-    if (file == NULL) {
-        printf("Impossible to read the file.\n");
-        fclose(file);
-        return 1;
-    }
-    char line[256];
-    while(fgets(line,sizeof(line),file)!=NULL &&linepr<linemax){
-        printf("%s", line);
-        linepr++;
-    }
-    fclose(file);
-}
-
-
-
-void changeHour(int totalTime)
+void changeHour(int totalTime) //affiche totalTime, qui est en secondes, en heures/minutes/secondes
 {
     int hours, minutes, seconds;
-    if(totalTime < 60)
+    if(totalTime < 60) //en fonction du nombre de secondes on affiche différemment le temps de jeu
     {
-        printf("Vous avez joué %d seconde(s).\n\n",totalTime);    
+        printf("Game time: %d second(s).\n\n",totalTime);    
     }
     else if(totalTime < 3600)
     {
-        minutes = totalTime / 60;
+        minutes = totalTime / 60; //ici on calcule nombre de minutes
         seconds = (totalTime % 3600) % 60;
-        printf("Vous avez joué %d minute(s) et %d seconde(s).\n\n",minutes,seconds);
+        printf("Game time: %d minute(s) and %d second(s).\n\n",minutes,seconds);
     }
     else
     {
-        hours = seconds / 3600;
+        hours = seconds / 3600; //et ici le nombre d'heures
         minutes = (seconds % 3600) / 60;
         seconds = (totalTime % 3600) % 60;
-        printf("you played %d hour(s), %d minute(s) et %d second(s).\n\n",hours,minutes,seconds);
+        printf("Game time: %d hour(s), %d minute(s) and %d second(s).\n\n",hours,minutes,seconds);
     }
+}
+
+
+
+
+typedef struct {
+    char name[256];
+    int score;
+    time_t time;
+} HighscoreEntry;
+
+void saveHighscore(int score, int totalTime) {
+    HighscoreEntry highscores[11]; // Augmenter la taille du tableau pour contenir le nouveau score
+
+    FILE *file = fopen("highscore.txt", "r");
+    if (file == NULL) {
+        printf("Impossible to open highscore file.\n");
+        return;
+    }
+
+    // Lire les scores existants à partir du fichier
+    int numScores=0;
+    while ( fscanf(file, "%255[^,],%d,%ld\n", highscores[numScores].name, &highscores[numScores].score, &highscores[numScores].time) == 3) {
+        numScores++;
+    }
+    fclose(file);
+
+    // Ajouter le nouveau score s'il est suffisamment élevé
+    if ( score > highscores[numScores - 1].score) {
+        HighscoreEntry newEntry;
+        printf("Enter your name: ");
+        scanf("%255s", newEntry.name);
+        newEntry.score = score;
+        newEntry.time = totalTime;
+
+        // Insérer le nouveau score au bon endroit du tableau
+        int insertIndex = numScores;
+        while (insertIndex > 0 && score > highscores[insertIndex - 1].score) {
+            highscores[insertIndex] = highscores[insertIndex - 1];
+            insertIndex--;
+        }
+        highscores[insertIndex] = newEntry;
+
+        // Enregistrer les scores dans le fichier
+        file = fopen("highscore.txt", "a");
+        if (file == NULL) {
+            printf("Impossible to open highscore file.\n");
+            return;
+        }
+        fprintf(file, " name = %s, score = %d, time = %lds\n", newEntry.name, newEntry.score, newEntry.time);
+        fclose(file);
+
+        printf("Highscore saved successfully.\n\n");
+    } else {
+        printf("Your score is not high enough to be saved.\n\n");
+    }
+}
+
+
+void loadHighscore() {
+    FILE *file = fopen("highscore.txt", "r");
+    if (file != NULL) {
+        printf("Highscores:\n");
+
+        
+        int numLines = 0;
+        char ch;
+        while ((ch = fgetc(file)) != EOF) {// Compter le nombre de lignes dans le fichier
+            if (ch == '\n') {
+                numLines++;
+            }
+        }
+        fseek(file, 0, SEEK_SET);  // Revenir au début du fichier
+
+        
+        int numScores = numLines < 10 ? numLines : 10;
+        int linesToSkip = numLines - numScores;
+        int lineCount = 0;
+        char line[256];
+        while (fgets(line, sizeof(line), file) != NULL) {   // Lire les 10 dernières lignes
+            if (lineCount >= linesToSkip) {
+                printf("%s", line);
+            }
+            lineCount++;
+        }
+
+        fclose(file);
+    } else {
+        printf("Impossible to read the file.\n");
+    }
+}
+
+
+
+
+void main()
+{
+    srand(time(NULL)); //pour avoir des symboles aléatoires
+    time_t begin = time(NULL); //on démarre le chronomètre qui calcule temps de jeu
+    int tab2[TWO], length, width, sign, totalTime = 0, roundNmb, score = 0; // longueur, largeur, nombre de symboles, temps de jeu, nombre de tous, score
+    char** tab;
+    if(checkGame()) //si on peut charger une sauvegarde...
+    {
+        if(wantLoadGame()) //et si le joueur le veut...
+        {
+            length = loadLength(); //alors on récupère la longueur et la largeur enregistré
+            width = loadWidth(); 
+            tab = malloc(width * sizeof(char*)); //on alloue de la mémoire en fonction de la longueur et de la largeur enregistré
+            for (int i = 0; i < width; i++)
+            {
+                tab[i] = malloc(length * sizeof(char));
+            }
+            tab[width] = malloc(length * sizeof(int)); //on créé une ligne bonus pour stocker le score
+            loadGame(tab,length,width); //on récupère le tableau et le score enregistré
+            roundNmb = roundNumber(); //on demande si l'utilisateur veut un nombre de tours
+        }
+        else
+        {
+            system("clear"); //on remet à 0 le terminal
+            createLength_and_Width(tab2); //on créé une longueur, une largeur, un nombre de signes, un tableau que l'on construit et on le transforme pour qu'il n'ait pas trois symboles côte à côte
+            length = tab2[0];
+            width = tab2[1];
+            sign = createSign(tab2);
+            roundNmb = roundNumber();
+            tab = malloc(width * sizeof(char*));
+            for (int i = 0; i < width; i++)
+            {
+                tab[i] = malloc(length * sizeof(char));
+            }
+            tab[width] = malloc(length * sizeof(int));
+            buildTab(tab, length, width, sign);
+            destroyTabforStart(tab, length, width, sign);
+        }
+    }
+    else
+    {
+        system("clear");
+        createLength_and_Width(tab2); //on créé une longueur, une largeur, un nombre de signes, un tableau que l'on construit et on le transforme pour qu'il n'ait pas trois symboles côte à côte
+        length = tab2[0];
+        width = tab2[1];
+        sign = createSign(tab2);
+        roundNmb = roundNumber();
+        tab = malloc(width * sizeof(char*));
+        for (int i = 0; i < width; i++)
+        {
+            tab[i] = malloc(length * sizeof(char));
+        }
+        tab[width] = malloc(length * sizeof(int)); //ligne bonus pour stocker le score
+        buildTab(tab, length, width, sign);
+        destroyTabforStart(tab, length, width, sign);
+    }
+    score = tab[width][0]; //le score est actualisé
+    showTab(tab, length, width, score); //on affiche le tableau
+    if(length<=32 && width<=99) //si les valeurs de length et de width sont corrects (voir les informations donnés au début du mode sans limite)
+    {   
+        game(tab,length,width,sign,score,roundNmb,begin); //le jeu commence
+    }
+    score = tab[width][0]; //le score est à nouveau actualisé
+    time_t end = time(NULL); //on arrête le chronomètre
+    totalTime = end - begin; //on calcule le temps de jeu total
+    printf("\n");
+    saveHighscore(score, totalTime);
+    loadHighscore();
+    changeHour(totalTime); //on affiche le temps de jeu total
+    free(tab); //on libére l'espace mémoire alloué
 }
