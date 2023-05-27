@@ -822,6 +822,11 @@ char **Placeswitch(char **tab, int length, int width, int score) //cette fonctio
         system("clear"); //on affiche le tableau
         showTab(tab,length,width,score);
         S = 0, switchValidate = 0;
+        while (trash != '\n' && trash != EOF)
+        {
+            trash = getchar();
+        }
+        trash=0;
         printf("What's the letter of the first place : "); //on récupère les coordonées de la première case
         x = getchar(); //on prend le premier caractère correspondant à la coordonnée en longueur et trash récupère tous les autres
         while (trash != '\n' && trash != EOF)
