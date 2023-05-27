@@ -906,6 +906,10 @@ char **Placeswitch(char **tab, int length, int width, int score)
             trash = 0;
         }
         y2--;
+        if((x!=x2+1 && x!=x2-1 && x!= x2) || (y!=y2+1 && y!=y2-1 && y!= y2)||(x==x2+1 && y==y2+1)||(x==x2-1 && y==y2+1)||(x==x2+1 && y==y2-1)||(x==x2-1 && y==y2-1)){
+            printf("Try again to 3 secondes.\n");
+        sleep(3);
+        }
         } while ((x!=x2+1 && x!=x2-1 && x!= x2) || (y!=y2+1 && y!=y2-1 && y!= y2)||(x==x2+1 && y==y2+1)||(x==x2-1 && y==y2+1)||(x==x2+1 && y==y2-1)||(x==x2-1 && y==y2-1));
 
         printf("La case choisie est (%c,%d).\n\n", (x2 + 65), (y2 + 1));
@@ -944,7 +948,7 @@ char **Placeswitch(char **tab, int length, int width, int score)
                 printf("Cannot destroy anything! Try again!\n");
             }
         }
-        printf("Reesayer d'échanger les cases dans 3 secondes.\n");
+        printf("Try again to 3 secondes.\n");
         sleep(3);
     }
 
@@ -954,7 +958,7 @@ int roundNumber()
 {
     int roundNumber = 0;
     char roundValidate, trash = 0;
-    printf("Voulez vous definir un nombre de rounds ? (print 'y' or 'Y' for yes and something else for no) : ");
+    printf("Do you want to define a number of round(s) ? (print 'y' or 'Y' for yes and something else for no) : ");
     roundValidate = getchar();
     while (trash != '\n' && trash != EOF)
     {
@@ -965,7 +969,7 @@ int roundNumber()
     {
         while(roundNumber <= 0)
         {
-            printf("Choisissez un nombre de round superieur a 0 : ");
+            printf("choose a number of round(s) higher than 0 : ");
             scanf("%d",&roundNumber);
             while (trash != '\n' && trash != EOF)
             {
@@ -995,7 +999,7 @@ void saveScore(int score)
     } 
     else 
     {
-        printf("Erreur lors de l'ouverture du fichier score.\n");
+        printf("error with the opening of the score file.\n");
     }
 }
 
@@ -1011,7 +1015,7 @@ void saveLength(int length)
     } 
     else 
     {
-        printf("Erreur lors de l'ouverture du fichier length.\n");
+        printf("error with the opening of the length file.\n");
     }
 }
 
@@ -1027,7 +1031,7 @@ void saveWidth(int width)
     } 
     else 
     {
-        printf("Erreur lors de l'ouverture du fichier width.\n");
+        printf("error with the opening of the width file.\n");
     }
 }
 
@@ -1035,7 +1039,7 @@ void saveWidth(int width)
 
 // Fonction pour sauvegarder le tableau de bonbons dans un fichier
 void saveTab(char** tab, int length, int width) {
-    FILE* fichier = fopen("tableau.txt", "w");
+    FILE* fichier = fopen("tab.txt", "w");
     if (fichier != NULL) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < length; j++) {
@@ -1044,11 +1048,11 @@ void saveTab(char** tab, int length, int width) {
             fprintf(fichier, "\n");
         }
         fclose(fichier);
-        printf("Tableau sauvegardé avec succès.\n");
+        printf("Tab successfuly loaded.\n");
     } 
     else 
     {
-        printf("Erreur lors de l'ouverture du fichier tableau.\n");
+        printf("error with the opening of the tab file.\n");
     }
 }
 
@@ -1084,11 +1088,11 @@ int loadScore() {
     {
         fscanf(fichier, "%d", &score);
         fclose(fichier);
-        printf("Score chargé avec succès.\n");
+        printf("Score successfuly loaded.\n");
     } 
     else 
     {
-        printf("Erreur lors de l'ouverture du fichier score.\n");
+        printf("error with the opening of the score file.\n");
     }
     return score;
 }
@@ -1105,7 +1109,7 @@ int loadLength() {
     } 
     else 
     {
-        printf("Erreur lors de l'ouverture du fichier length.\n");
+        printf("error with the opening of the length file.\n");
     }
     return length;
 }
@@ -1122,7 +1126,7 @@ int loadWidth() {
     } 
     else 
     {
-        printf("Erreur lors de l'ouverture du fichier width.\n");
+        printf("error with the opening of the width file.\n");
     }
     return width;
 }
@@ -1131,7 +1135,7 @@ int loadWidth() {
 
 // Fonction pour charger le tableau de bonbons à partir d'un fichier
 void loadTab(char** tab, int length, int width) {
-    FILE* fichier = fopen("tableau.txt", "r");
+    FILE* fichier = fopen("tab.txt", "r");
     if (fichier != NULL) {
         for (int i = 0; i < width; i++) 
         {
@@ -1142,11 +1146,11 @@ void loadTab(char** tab, int length, int width) {
             fscanf(fichier, "\n");
         }
         fclose(fichier);
-        printf("Tableau chargé avec succès.\n");
+        printf("Tab successfuly loaded.\n");
     } 
     else 
     {
-        printf("Erreur lors de l'ouverture du fichier tableau.\n");
+        printf("error with the opening of the tab file.\n");
     }
 }
 
@@ -1199,12 +1203,12 @@ void game(char** tab,int length, int width, int sign, int score, int roundNmb)
         }
         else if(roundNmb == 0)
         {
-            printf("C'est fini !\n\n");
+            printf("Game's Over!\n\n");
             break;
         }
         else
         {
-            printf("Il vous reste %d rounds.\n\n",roundNmb);
+            printf("You have %d rounds.\n\n",roundNmb);
         }
         saveGame(tab,length,width,score);
         if (wantStop())
@@ -1323,7 +1327,7 @@ void changeHour(int totalTime)
         hours = seconds / 3600;
         minutes = (seconds % 3600) / 60;
         seconds = (totalTime % 3600) % 60;
-        printf("Vous avez joué %d heure(s), %d minute(s) et %d seconde(s).\n\n",hours,minutes,seconds);
+        printf("you played %d hour(s), %d minute(s) et %d second(s).\n\n",hours,minutes,seconds);
     }
 }
 
