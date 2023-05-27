@@ -11,4 +11,4 @@ Voici comment se déroulera le jeu:
 5) Si les coordonnées sont valides, c'est à dire qu'elles sont dans le tableau, qu'elles sont voisines et que lorsque l'on les échanges, cela détruit des "bonbons", c'est à dire que cela fait disparaître des caractères, qui seront générer aléatoirement ensuite. Sinon on vous redemande un couple de coordonnées.
 6) Lorsque le jeu a terminé de détruire et d'appliquer une gravité pour recréer des caractères, il vous demandera alors si vous voulez sauvegarder et ensuite si vous souhaitez sortir du jeu.
 7) Si vous souhaitez rester dans le jeu, il y aura alors une répétition des étapes 4 à 6. Sinon vous sortirez du jeu et le jeu vous demandera votre pseudo ou votre nom pour l'enregistrer dans le Highscore.
-8) le highscore sera affiché sur les 10 dernières parties jouées (malheureusement un manque de temps fait que l'on n'a pas pu les mettres dans l'ordre) ainsi que le temps qu'a durée la partie.
+8) le highscore sera affiché sur les 10 dernières parties jouées (malheureusement un manque de temps fait que l'on n'a pas pu les mettres dans l'ordre) ainsi que le temps qu'a durée la partie. 
