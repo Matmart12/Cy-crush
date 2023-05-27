@@ -4,7 +4,7 @@ Bienvenu dans Cy-crush!
 Pour jouer correctement l'équipe vous demande de bien suivre les étapes indiqués lors de votre partie.
 On vous demande par ailleurs de ne rien taper tant que le jeu ne vous le demande pas.
 Voici comment se déroulera le jeu:
-1) Vous aurez le choix, si une partie a été sauvegarder au préalable, de pouvoir charger la partie.
+1) Vous aurez le choix, si une partie a été sauvegarder au préalable, de pouvoir charger la partie (si vous chargez une partie et qu'il n'y a aucune sauvegarde cela arrêtera automatiquement la partie).
 2) Si vous choisissez de ne pas charger la partie alors le jeu vous demandera les dimensions et le nombre de caractère avec lesquels vous souhaitez jouer (Les dimensions max sont 26 par 26 et il y aura entre 4 et 6 caractères qui seront demandés indépendamment)
 3) Vous pouvez choisir de mettre ou de ne pas mettre un décompte de tour pour votre partie
 4) Le jeu vous demandera les coordonnées des cases à échanger (qui seront toujours demandés indépendamment)
