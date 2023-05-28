@@ -1299,89 +1299,107 @@ void changeHour(int totalTime) //affiche totalTime, qui est en secondes, en heur
 
 
 
-typedef struct {
+typedef struct //structure contenant toutes les informations à enregistrer dans le highScore
+{
     char name[256];
     int score;
-    time_t time;
-} HighscoreEntry;
+    int time;
+} Highscores;
 
-void saveHighscore(int score, int totalTime) {
-    HighscoreEntry highscores[11]; // Augmenter la taille du tableau pour contenir le nouveau score
 
-    FILE *file = fopen("highscore.txt", "r");
-    if (file == NULL) {
-        printf("Impossible to open highscore file.\n");
+
+void saveHighscores(int score, int totalTime)
+{
+    FILE* file = fopen("highscore.txt", "a+"); //ouvre le fichier en mode ajout et lecture et le créé s'il n'existe pas
+    if (file == NULL)
+    {
+        printf("Unable to create/open file.\n");
         return;
     }
 
-    // Lire les scores existants à partir du fichier
-    int numScores=0;
-    while ( fscanf(file, "%255[^,],%d,%ld\n", highscores[numScores].name, &highscores[numScores].score, &highscores[numScores].time) == 3) {
-        numScores++;
-    }
-    fclose(file);
+    Highscores game;
+    game.score = score;
+    game.time = totalTime;
+    printf("Enter your name : "); //on récupére le nom (avec un fgets qui peut ainsi prendre les espaces), le score et le temps de jeu du joueur
+    fgets(game.name, sizeof(game.name), stdin);
+    game.name[strcspn(game.name, "\n")] = '\0';
 
-    // Ajouter le nouveau score s'il est suffisamment élevé
-    if ( score > highscores[numScores - 1].score) {
-        HighscoreEntry newEntry;
-        printf("Enter your name: ");
-        scanf("%255s", newEntry.name);
-        newEntry.score = score;
-        newEntry.time = totalTime;
+    Highscores gameArray[11]; //on définit un tableau de 11 qui peut ainsi récupérer tous les scores dans le Highscore
+    int numScores = 0;
 
-        // Insérer le nouveau score au bon endroit du tableau
-        int insertIndex = numScores;
-        while (insertIndex > 0 && score > highscores[insertIndex - 1].score) {
-            highscores[insertIndex] = highscores[insertIndex - 1];
-            insertIndex--;
-        }
-        highscores[insertIndex] = newEntry;
-
-        // Enregistrer les scores dans le fichier
-        file = fopen("highscore.txt", "a");
-        if (file == NULL) {
-            printf("Impossible to open highscore file.\n");
+    // Lire les scores existants
+    char line[256];
+    while (fgets(line, sizeof(line), file) != NULL && numScores < 11)
+    {
+        sscanf(line, "%[^,],%d,%d", gameArray[numScores].name, &(gameArray[numScores].score), &(gameArray[numScores].time)); //on sauvegarde le score du joueur dans highscore.txt
+        if (game.score == gameArray[numScores].score && game.time == gameArray[numScores].time && strcmp(game.name, gameArray[numScores].name) == 0)  //si le nom, le score et le temps sont identiques, on ne l'ajoute pas dans le highscore. On évite ainsi les doublons et avoir exactement le même score et temps est assez improbable involontairement
+        {
+            fclose(file);
+            printf("Your score already exists in the leaderboard.\n\n");
             return;
         }
-        fprintf(file, " name = %s, score = %d, time = %lds\n", newEntry.name, newEntry.score, newEntry.time);
+        numScores++; //on regarde tous les scores enregistrés pour checher les doublons
+    }
+    if (numScores < 10 || game.score > gameArray[numScores - 1].score) //on vérifie si le score est assez élevé pour être integré dans Highscore
+    {
+        gameArray[numScores] = game; //et si c'est le cas, on l'ajoute
+        numScores++;
+        for (int i = 0; i < numScores - 1; i++) //puis on tri le highscore en fonctions des scores
+        {
+            for (int j = i + 1; j < numScores; j++)
+            {
+                if (gameArray[j].score > gameArray[i].score)
+                {
+                    Highscores temp = gameArray[i];
+                    gameArray[i] = gameArray[j];
+                    gameArray[j] = temp;
+                }
+            }
+        }
         fclose(file);
-
-        printf("Highscore saved successfully.\n\n");
-    } else {
-        printf("Your score is not high enough to be saved.\n\n");
+        file = fopen("highscore.txt", "w"); //ensuite on ouvre highscore en mode écriture
+        if (file != NULL)
+        {
+            for (int i = 0; i < numScores && i < 10; i++) //et on écrit les scores que l'on vient d'enregistrer dans l'ordre croissant dans le fichier
+            {
+                fprintf(file, "%s,%d,%d\n", gameArray[i].name, gameArray[i].score, gameArray[i].time);
+            }
+            fclose(file);
+            printf("Your score has been saved in the highscores. Congratulation !\n\n"); //on indique au joueur que son score a été enregistré dans le highscore
+        }
+        else
+        {
+            printf("Error: Unable to open highscore.txt file.\n");
+        }
+    }
+    else
+    {
+        fclose(file);
+        printf("Your score is not high enough to be recorded in the highscore. Try again !\n\n"); //si le score n'est pas assez élevé le highscore reste tel quel et on indique au joueur que son score n'est pas assez élevé pour être integré au tableau
     }
 }
 
 
-void loadHighscore() {
-    FILE *file = fopen("highscore.txt", "r");
-    if (file != NULL) {
-        printf("Highscores:\n");
 
-        
-        int numLines = 0;
-        char ch;
-        while ((ch = fgetc(file)) != EOF) {// Compter le nombre de lignes dans le fichier
-            if (ch == '\n') {
-                numLines++;
-            }
-        }
-        fseek(file, 0, SEEK_SET);  // Revenir au début du fichier
 
-        
-        int numScores = numLines < 10 ? numLines : 10;
-        int linesToSkip = numLines - numScores;
-        int lineCount = 0;
-        char line[256];
-        while (fgets(line, sizeof(line), file) != NULL) {   // Lire les 10 dernières lignes
-            if (lineCount >= linesToSkip) {
-                printf("%s", line);
-            }
-            lineCount++;
-        }
-
-        fclose(file);
-    } else {
-        printf("Impossible to read the file.\n");
+void loadHighscore() //on affiche les scores
+{
+    int rank = 1;
+    FILE* file = fopen("highscore.txt", "r");
+    if (file == NULL) 
+    {
+        printf("Unable to read the file.\n\n\n");
+        return;
     }
+    char line[256];
+    while (fgets(line, sizeof(line), file) != NULL && rank <= 10)  
+    {
+        char name[256]; //on crée trois variables pour chacune des données enregistrés dans highscore.txt puis on les affiches
+        int score;
+        int time;
+        sscanf(line, "%[^,],%d,%d", name, &score, &time);
+        printf("%d : name = %s, score = %d, Playtime = %ds\n\n\n", rank, name, score, time);
+        rank++; //le rang augmente d'un à chaque nouveau score
+    }
+    fclose(file);
 }
